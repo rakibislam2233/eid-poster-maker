@@ -397,7 +397,7 @@
         position: fixed;
         top: 28px;
         left: 50%;
-        transform: translateX(-50%) translateY(-80px);
+        transform: translateX(-50%) translateY(-130px);
         background: #1a0010;
         border: 1px solid rgba(233, 30, 140, 0.5);
         color: #fff;
@@ -408,6 +408,7 @@
         z-index: 999;
         white-space: nowrap;
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        pointer-events: none;
       }
       .toast.show {
         transform: translateX(-50%) translateY(0);
@@ -479,6 +480,44 @@
       }
 
       @media (max-width: 520px) {
+        body {
+          display: flex;
+          flex-direction: column;
+        }
+        .hdr {
+          order: 1;
+        }
+        /* Template section - order 2 */
+        .sec:nth-of-type(1) {
+          order: 2;
+        }
+        /* Preview section - moved to order 3 (was 5th element) */
+        .sec:nth-of-type(5) {
+          order: 3;
+          margin-top: 0;
+          border-top: 1px solid rgba(233, 30, 140, 0.15);
+        }
+        /* Upload section - order 4 */
+        .sec:nth-of-type(2) {
+          order: 4;
+        }
+        /* Phone section - order 5 */
+        .sec:nth-of-type(3) {
+          order: 5;
+        }
+        /* Message section - order 6 */
+        .sec:nth-of-type(4) {
+          order: 6;
+        }
+        /* Actions - order 7 */
+        .actions {
+          order: 7;
+        }
+        /* Footer - order 8 */
+        .footer {
+          order: 8;
+        }
+
         .upload-grid {
           grid-template-columns: 1fr;
         }
@@ -492,10 +531,23 @@
         .phone-row .prefix {
           width: 100%;
         }
+        .sec-title {
+          font-size: 14px;
+          margin-bottom: 14px;
+        }
+        .preview-wrap {
+          width: 100%;
+          max-width: none;
+        }
         .toast {
           max-width: calc(100vw - 24px);
           white-space: normal;
           text-align: center;
+          top: 80px !important;
+          transform: translateX(-50%) translateY(-160px) !important;
+        }
+        .toast.show {
+          transform: translateX(-50%) translateY(0) !important;
         }
         .notice-banner {
           padding: 12px;
@@ -755,7 +807,7 @@
       if (IS_FACEBOOK_BROWSER) {
         setTimeout(function () {
           showNotice(
-            "⚠️ সীমিত সাপোর্ট: Facebook ব্রাউজারে কিছু ফিচার কাজ করে না। Chrome বা Safari ব্যবহার করুন।",
+            "সীমিত সাপোর্ট: Facebook ব্রাউজারে কিছু ফিচার কাজ করে না। Chrome বা Safari ব্যবহার করুন।",
           );
         }, 800);
       }
@@ -962,7 +1014,17 @@
         cropCtx.scale(cropState.zoom, cropState.zoom);
         cropCtx.translate(-zoomCenterX, -zoomCenterY);
 
-        cropCtx.drawImage(cropState.srcImg, 0, 0, w, h);
+        cropCtx.drawImage(
+          cropState.srcImg,
+          0,
+          0,
+          cropState.srcImg.naturalWidth,
+          cropState.srcImg.naturalHeight,
+          0,
+          0,
+          w,
+          h,
+        );
         cropCtx.restore();
       }
 
@@ -1509,10 +1571,13 @@
           c.rect(x, y, w, h);
           c.clip();
         }
-        var sc = Math.max(w / photo.width, h / photo.height);
+        // Calculate scale to fit image within bounds while maintaining aspect ratio
+        var scaleW = w / photo.width;
+        var scaleH = h / photo.height;
+        var sc = Math.min(scaleW, scaleH);
         var pw = photo.width * sc,
-          ph2 = photo.height * sc;
-        c.drawImage(photo, x + (w - pw) / 2, y + (h - ph2) / 2, pw, ph2);
+          ph = photo.height * sc;
+        c.drawImage(photo, x + (w - pw) / 2, y + (h - ph) / 2, pw, ph);
         c.restore();
       }
       function drawQR(c, qr, x, y, size) {
@@ -1540,7 +1605,10 @@
         c.arcTo(x, y, x + r2, y, r2);
         c.closePath();
         c.clip();
-        var sc = Math.max(size / qr.width, size / qr.height);
+        // Calculate scale to fit QR code within bounds while maintaining aspect ratio
+        var scaleW = size / qr.width;
+        var scaleH = size / qr.height;
+        var sc = Math.min(scaleW, scaleH);
         var qw = qr.width * sc,
           qh = qr.height * sc;
         c.drawImage(qr, x + (size - qw) / 2, y + (size - qh) / 2, qw, qh);
@@ -1720,15 +1788,18 @@
               c.save();
               blobPath(c, fx, fy, fw, fh);
               c.clip();
-              var psc = Math.max(fw / photo.width, fh / photo.height);
+              // Calculate scale to fit image within bounds while maintaining aspect ratio
+              var pscaleW = fw / photo.width;
+              var pscaleH = fh / photo.height;
+              var psc = Math.min(pscaleW, pscaleH);
               var pw = photo.width * psc,
-                phh = photo.height * psc;
+                ph = photo.height * psc;
               c.drawImage(
                 photo,
                 fx + (fw - pw) / 2,
-                fy + (fh - phh) / 2,
+                fy + (fh - ph) / 2,
                 pw,
-                phh,
+                ph,
               );
               c.restore();
               c.restore();
@@ -1899,13 +1970,18 @@
               stripY + stripH * 0.52,
             );
 
-            // Draw phone number with Bangla digits
-            var phoneDisplayNum = englishToBanglaDigits(ph);
-            c.font = "600 " + Math.round(s * 0.032) + "px " + FONT_SERIF;
+            // Draw phone number with Bangla digits (show only first 2 on mobile)
+            var phoneDisplay = englishToBanglaDigits(ph);
+            // Show only first 2 digits on mobile canvas small size
+            if (s < 500) {
+              phoneDisplay = phoneDisplay.substring(0, 2);
+            }
+            c.font = "600 " + Math.round(s * 0.028) + "px " + FONT_SERIF;
             c.fillStyle = "#FFE8F6";
+            c.textAlign = "left";
             c.fillText(
-              phoneDisplayNum,
-              stripX + leftW + s * 0.198,
+              phoneDisplay,
+              stripX + leftW + s * 0.12,
               stripY + stripH * 0.52,
             );
             c.restore();
@@ -2011,15 +2087,18 @@
               c.save();
               blobPath(c, fx, fy, fw, fh);
               c.clip();
-              var psc = Math.max(fw / photo.width, fh / photo.height);
+              // Calculate scale to fit image within bounds while maintaining aspect ratio
+              var pscaleW = fw / photo.width;
+              var pscaleH = fh / photo.height;
+              var psc = Math.min(pscaleW, pscaleH);
               var pw = photo.width * psc,
-                phh = photo.height * psc;
+                ph = photo.height * psc;
               c.drawImage(
                 photo,
                 fx + (fw - pw) / 2,
-                fy + (fh - phh) / 2,
+                fy + (fh - ph) / 2,
                 pw,
-                phh,
+                ph,
               );
               c.restore();
               c.restore();
@@ -2184,13 +2263,18 @@
               stripY + stripH * 0.52,
             );
 
-            // Draw phone number with Bangla digits
-            var phoneDisplayNum = englishToBanglaDigits(ph);
-            c.font = "600 " + Math.round(s * 0.032) + "px " + FONT_SERIF;
+            // Draw phone number with Bangla digits (show only first 2 on mobile)
+            var phoneDisplay = englishToBanglaDigits(ph);
+            // Show only first 2 digits on mobile canvas small size
+            if (s < 500) {
+              phoneDisplay = phoneDisplay.substring(0, 2);
+            }
+            c.font = "600 " + Math.round(s * 0.028) + "px " + FONT_SERIF;
             c.fillStyle = "#FFF0D8";
+            c.textAlign = "left";
             c.fillText(
-              phoneDisplayNum,
-              stripX + leftW + s * 0.198,
+              phoneDisplay,
+              stripX + leftW + s * 0.12,
               stripY + stripH * 0.52,
             );
             c.restore();
@@ -2975,14 +3059,26 @@
       /* ═══════════════════════════
          TOAST
       ═══════════════════════════ */
-      var toastT;
+      var toastT,
+        lastToastMsg = "";
       function showToast(msg) {
         var t = document.getElementById("toast");
-        t.textContent = msg;
-        t.classList.add("show");
         clearTimeout(toastT);
+        // Skip if same message is already showing
+        if (msg === lastToastMsg && t.classList.contains("show")) {
+          return;
+        }
+        lastToastMsg = msg;
+        t.textContent = msg;
+        // Remove class first to force animation reset
+        t.classList.remove("show");
+        // Force reflow to trigger animation restart
+        void t.offsetWidth;
+        // Add show class after reset
+        t.classList.add("show");
         toastT = setTimeout(function () {
           t.classList.remove("show");
+          lastToastMsg = "";
         }, 2500);
       }
 
