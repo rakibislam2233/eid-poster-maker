@@ -3,49 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>ঈদ পোস্টার মেকার - Free Eid Poster Generator</title>
-    <meta
-      name="description"
-      content="ঈদ মোবারক! বিনামূল্যে ঈদ পোস্টার, কার্ড এবং সালামি পোস্টার তৈরি করুন। Bkash ও Nagad সাপোর্ট সহ সহজ ডিজাইন টুল।"
-    />
-    <meta
-      name="keywords"
-      content="ঈদ পোস্টার, ঈদ কার্ড, Bkash সালামি, Nagad সালামি, পোস্টার মেকার, ঈদ ডিজাইন, ফ্রি পোস্টার"
-    />
-    <meta name="author" content="Eid Poster Generator" />
-    <meta name="robots" content="index, follow" />
-    <meta name="theme-color" content="#e91e8c" />
-    <link rel="canonical" href="https://eidpostergenerator.com/" />
-
-    <!-- Open Graph Tags (Social Sharing) -->
-    <meta property="og:type" content="website" />
-    <meta
-      property="og:title"
-      content="ঈদ পোস্টার মেকার - Free Eid Design Tool"
-    />
-    <meta
-      property="og:description"
-      content="নিজের ছবি দিয়ে সুন্দর ঈদ পোস্টার ও সালামি কার্ড বানান বিনামূল্যে।"
-    />
-    <meta property="og:url" content="https://eidpostergenerator.com/" />
-    <meta
-      property="og:image"
-      content="https://eidpostergenerator.com/og-image.png"
-    />
-    <meta property="og:site_name" content="Eid Poster Maker" />
-
-    <!-- Twitter Card Tags -->
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="ঈদ পোস্টার মেকার" />
-    <meta
-      name="twitter:description"
-      content="বিনামূল্যে ঈদ পোস্টার এবং সালামি কার্ড ডিজাইন করুন।"
-    />
-    <meta
-      name="twitter:image"
-      content="https://eidpostergenerator.com/og-image.png"
-    />
-
+    <title>Eid Poster Maker</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -437,9 +395,9 @@
       /* TOAST */
       .toast {
         position: fixed;
-        bottom: 28px;
+        top: 28px;
         left: 50%;
-        transform: translateX(-50%) translateY(80px);
+        transform: translateX(-50%) translateY(-80px);
         background: #1a0010;
         border: 1px solid rgba(233, 30, 140, 0.5);
         color: #fff;
@@ -551,27 +509,6 @@
         }
       }
     </style>
-
-    <!-- Schema Markup for SEO -->
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org/",
-        "@type": "WebApplication",
-        "name": "ঈদ পোস্টার মেকার",
-        "url": "https://eidpostergenerator.com/",
-        "description": "বিনামূল্যে ঈদ পোস্টার এবং সালামি কার্ড তৈরি করুন",
-        "applicationCategory": "Multimedia",
-        "offers": {
-          "@type": "Offer",
-          "price": "0",
-          "priceCurrency": "USD"
-        },
-        "author": {
-          "@type": "Organization",
-          "name": "Eid Poster Generator"
-        }
-      }
-    </script>
   </head>
   <body>
     <header class="hdr">
@@ -594,7 +531,7 @@
         ><span id="upload-step-title">ছবি ও QR কোড আপলোড করুন</span>
       </div>
       <div class="upload-grid" id="upload-grid">
-        <div class="upload-box" id="photo-box" onclick="triggerUpload('photo')">
+        <div class="upload-box" id="photo-box">
           <img class="upload-preview" id="photo-prev" style="display: none" />
           <div class="upload-label">
             <span class="icon">🤳</span>
@@ -602,7 +539,7 @@
           </div>
           <span class="crop-tag">✂ Crop</span>
         </div>
-        <div class="upload-box" id="qr-box" onclick="triggerUpload('qr')">
+        <div class="upload-box" id="qr-box">
           <img class="upload-preview" id="qr-prev" style="display: none" />
           <div class="upload-label">
             <span class="icon">📱</span>
@@ -665,7 +602,7 @@
     <!-- CROP MODAL -->
     <div class="crop-overlay hidden" id="crop-overlay">
       <div class="crop-title" id="crop-title">ছবি Crop করুন</div>
-      <div class="crop-hint">টেনে এলাকা নির্বাচন করুন</div>
+      <div class="crop-hint">পিঞ্চ করে জুম করুন, টেনে নির্বাচন করুন</div>
       <div class="crop-canvas-wrap" id="crop-wrap">
         <canvas id="crop-canvas"></canvas>
         <div class="crop-selection hidden" id="crop-sel"></div>
@@ -721,6 +658,20 @@
       var canvas = document.getElementById("main-canvas");
       var ctx = canvas.getContext("2d");
 
+      // Facebook browser detection
+      var IS_FACEBOOK_BROWSER =
+        navigator.userAgent.indexOf("FBAN") > -1 ||
+        navigator.userAgent.indexOf("FBAV") > -1 ||
+        navigator.userAgent.indexOf("Instagram") > -1;
+
+      if (IS_FACEBOOK_BROWSER) {
+        setTimeout(function () {
+          showToast(
+            "একটি অনুরোধ: ভালো অভিজ্ঞতার জন্য Chrome বা Safari ব্রাউজার ব্যবহার করুন",
+          );
+        }, 1500);
+      }
+
       function getActiveBrand() {
         var tpl = TEMPLATES[currentTpl];
         return tpl && tpl.brand === "nagad" ? "nagad" : "bkash";
@@ -739,9 +690,7 @@
         var isPayment = isPaymentTemplateIndex(currentTpl);
         var brandLabel = isNagad ? "Nagad" : "Bkash";
 
-        document.title = isPayment
-          ? brandLabel + " ঈদ সালামি পোস্টার"
-          : "ঈদ শুভেচ্ছা পোস্টার";
+        document.title = "Eid Poster Maker";
 
         document.getElementById("hdr-subtitle").textContent = isPayment
           ? "নিজের ছবি দিয়ে বানান " + brandLabel + " ঈদ সালামি পোস্টার 🌙"
@@ -944,6 +893,11 @@
         cropSel.style.top = y1 + "px";
         cropSel.style.width = x2 - x1 + "px";
         cropSel.style.height = y2 - y1 + "px";
+        cropSel.classList.remove("hidden");
+      }
+
+      function onCropDown(e) {
+        e.preventDefault();
         var p = getRelXY(e, cropCanvas);
         cropState.startX = clamp(p.x, 0, cropCanvas.width);
         cropState.startY = clamp(p.y, 0, cropCanvas.height);
@@ -962,110 +916,105 @@
       }
       function onCropUp(e) {
         cropState.dragging = false;
-        cropCanvas.addEventListener("mouseup", onCropUp);
-        cropCanvas.addEventListener("touchstart", onCropDown, {
-          passive: false,
-        });
-        cropCanvas.addEventListener("touchmove", onCropMove, {
-          passive: false,
-        });
-        cropCanvas.addEventListener("touchend", onCropUp);
+      }
 
-        // Pinch zoom for mobile
-        var lastTouchDistance = 0;
-        cropCanvas.addEventListener(
-          "touchstart",
-          function (e) {
-            if (e.touches.length === 2) {
-              var dx = e.touches[0].clientX - e.touches[1].clientX;
-              var dy = e.touches[0].clientY - e.touches[1].clientY;
-              lastTouchDistance = Math.sqrt(dx * dx + dy * dy);
-            }
-          },
-          { passive: true },
-        );
+      cropCanvas.addEventListener("mousedown", onCropDown);
+      cropCanvas.addEventListener("mousemove", onCropMove);
+      cropCanvas.addEventListener("mouseup", onCropUp);
+      cropCanvas.addEventListener("touchstart", onCropDown, { passive: false });
+      cropCanvas.addEventListener("touchmove", onCropMove, { passive: false });
+      cropCanvas.addEventListener("touchend", onCropUp);
 
-        cropCanvas.addEventListener(
-          "touchmove",
-          function (e) {
-            if (e.touches.length === 2) {
-              e.preventDefault();
-              var dx = e.touches[0].clientX - e.touches[1].clientX;
-              var dy = e.touches[0].clientY - e.touches[1].clientY;
-              var currentDistance = Math.sqrt(dx * dx + dy * dy);
+      // Pinch zoom for mobile
+      var lastTouchDistance = 0;
+      cropCanvas.addEventListener(
+        "touchstart",
+        function (e) {
+          if (e.touches.length === 2) {
+            var dx = e.touches[0].clientX - e.touches[1].clientX;
+            var dy = e.touches[0].clientY - e.touches[1].clientY;
+            lastTouchDistance = Math.sqrt(dx * dx + dy * dy);
+          }
+        },
+        { passive: true },
+      );
 
-              if (lastTouchDistance > 0) {
-                var scale = currentDistance / lastTouchDistance;
-                cropState.zoom = Math.max(
-                  1,
-                  Math.min(4, cropState.zoom * scale),
-                );
-                redrawCropCanvas();
-              }
-              lastTouchDistance = currentDistance;
-            }
-          },
-          { passive: false },
-        );
-
-        // Mouse wheel zoom for desktop testing
-        cropCanvas.addEventListener(
-          "wheel",
-          function (e) {
+      cropCanvas.addEventListener(
+        "touchmove",
+        function (e) {
+          if (e.touches.length === 2) {
             e.preventDefault();
-            var zoomDelta = e.deltaY > 0 ? 0.9 : 1.1;
-            cropState.zoom = Math.max(
-              1,
-              Math.min(4, cropState.zoom * zoomDelta),
-            );
-            redrawCropCanvas();
-          },
-          { passive: false },
-        );
+            var dx = e.touches[0].clientX - e.touches[1].clientX;
+            var dy = e.touches[0].clientY - e.touches[1].clientY;
+            var currentDistance = Math.sqrt(dx * dx + dy * dy);
 
-        document
-          .getElementById("crop-cancel")
-          .addEventListener("click", function () {
-            closeCrop();
-            showToast("বাতিল করা হয়েছে");
-          });
-
-        document
-          .getElementById("crop-confirm")
-          .addEventListener("click", function () {
-            var x1 = Math.min(cropState.startX, cropState.curX);
-            var y1 = Math.min(cropState.startY, cropState.curY);
-            var x2 = Math.max(cropState.startX, cropState.curX);
-            var y2 = Math.max(cropState.startY, cropState.curY);
-            var w = x2 - x1,
-              h = y2 - y1;
-
-            // If no selection drawn, use full image
-            if (w < 10 || h < 10) {
-              x1 = 0;
-              y1 = 0;
-              w = cropCanvas.width;
-              h = cropCanvas.height;
+            if (lastTouchDistance > 0) {
+              var scale = currentDistance / lastTouchDistance;
+              cropState.zoom = Math.max(1, Math.min(4, cropState.zoom * scale));
+              redrawCropCanvas();
             }
+            lastTouchDistance = currentDistance;
+          }
+        },
+        { passive: false },
+      );
 
-            var sc = cropState.scale;
-            var oc = document.createElement("canvas");
-            oc.width = Math.round(w / sc);
-            oc.height = Math.round(h / sc);
-            oc.getContext("2d").drawImage(
-              cropState.srcImg,
-              x1 / sc,
-              y1 / sc,
-              oc.width,
-              oc.height,
-              0,
-              0,
-              oc.width,
-              oc.height,
-            );
+      // Mouse wheel zoom for desktop testing
+      cropCanvas.addEventListener(
+        "wheel",
+        function (e) {
+          e.preventDefault();
+          var zoomDelta = e.deltaY > 0 ? 0.9 : 1.1;
+          cropState.zoom = Math.max(1, Math.min(4, cropState.zoom * zoomDelta));
+          redrawCropCanvas();
+        },
+        { passive: false },
+      );
 
-            var croppedImg = new Image();
-            croppedImg.onload = function () {
+      document
+        .getElementById("crop-cancel")
+        .addEventListener("click", function () {
+          closeCrop();
+          showToast("বাতিল করা হয়েছে");
+        });
+
+      document
+        .getElementById("crop-confirm")
+        .addEventListener("click", function () {
+          var x1 = Math.min(cropState.startX, cropState.curX);
+          var y1 = Math.min(cropState.startY, cropState.curY);
+          var x2 = Math.max(cropState.startX, cropState.curX);
+          var y2 = Math.max(cropState.startY, cropState.curY);
+          var w = x2 - x1,
+            h = y2 - y1;
+
+          // If no selection drawn, use full image
+          if (w < 10 || h < 10) {
+            x1 = 0;
+            y1 = 0;
+            w = cropCanvas.width;
+            h = cropCanvas.height;
+          }
+
+          var sc = cropState.scale;
+          var oc = document.createElement("canvas");
+          oc.width = Math.round(w / sc);
+          oc.height = Math.round(h / sc);
+          oc.getContext("2d").drawImage(
+            cropState.srcImg,
+            x1 / sc,
+            y1 / sc,
+            oc.width,
+            oc.height,
+            0,
+            0,
+            oc.width,
+            oc.height,
+          );
+
+          var croppedImg = new Image();
+          croppedImg.onload = function () {
+            try {
               if (cropState.type === "photo") {
                 userPhoto = croppedImg;
                 var pv = document.getElementById("photo-prev");
@@ -1073,6 +1022,7 @@
                 pv.style.display = "block";
                 document.getElementById("photo-box").classList.add("has-img");
                 showToast("ছবি Crop হয়েছে ✓");
+                // processPhotoBgRemoval(croppedImg, pv); // BG remove disabled for now
               } else {
                 userQR = croppedImg;
                 var qv = document.getElementById("qr-prev");
@@ -1083,1701 +1033,1714 @@
               }
               render();
               closeCrop();
-            };
-            croppedImg.src = oc.toDataURL();
-          });
+            } catch (e) {
+              if (IS_FACEBOOK_BROWSER) {
+                showToast("Crop সমস্যা - Chrome বা Safari ব্যবহার করে দেখুন");
+              } else {
+                showToast("ছবি Crop করা বিফল হয়েছে");
+              }
+            }
+          };
+          croppedImg.onerror = function () {
+            if (IS_FACEBOOK_BROWSER) {
+              showToast("Chrome বা Safari এ খুলুন - এখানে সমস্যা আছে");
+            } else {
+              showToast("ছবি লোড করা বিফল হয়েছে");
+            }
+          };
+          croppedImg.src = oc.toDataURL();
+        });
 
-        /* ═══════════════════════════
+      /* ═══════════════════════════
          FILE TRIGGERS
       ═══════════════════════════ */
-        function triggerUpload(type) {
-          var input = document.getElementById(type + "-input");
-          if (!input) return;
-          // Give a small delay to ensure click is properly registered on mobile
-          setTimeout(function () {
+      function triggerUpload(type) {
+        var input = document.getElementById(type + "-input");
+        if (!input) {
+          showToast("ফাইল ইনপুট সনাক্ত করা যায়নি");
+          return;
+        }
+
+        // Reset input value to allow selecting same file
+        input.value = "";
+
+        // Try click (may fail in Facebook browser)
+        var clickSuccess = false;
+        try {
+          var clickEvent = new MouseEvent("click", {
+            bubbles: true,
+            cancelable: true,
+            view: window,
+          });
+          input.dispatchEvent(clickEvent);
+          clickSuccess = true;
+        } catch (e) {
+          // Fallback to direct click
+        }
+
+        if (!clickSuccess) {
+          try {
             input.click();
-          }, 50);
+          } catch (e) {
+            if (IS_FACEBOOK_BROWSER) {
+              showToast(
+                "Chrome বা Safari এ খুলুন - এখানে ফাইল নির্বাচন কাজ করে না",
+              );
+            } else {
+              showToast("ফাইল আপলোড করা যাচ্ছে না, পুনরায় চেষ্টা করুন");
+            }
+          }
         }
+      }
 
-        function handleFile(type, file) {
-          var r = new FileReader();
-          r.onload = function (ev) {
-            var img = new Image();
-            img.onload = function () {
-              // Small delay before opening crop to ensure image is ready
-              setTimeout(function () {
-                openCrop(type, img);
-              }, 50);
-            };
-            img.onerror = function () {
-              showToast("ছবি লোড করা বিফল হয়েছে");
-            };
-            img.src = ev.target.result;
+      function handleFile(type, file) {
+        var r = new FileReader();
+        r.onload = function (ev) {
+          var img = new Image();
+          img.onload = function () {
+            openCrop(type, img);
           };
-          r.onerror = function () {
-            showToast("ফাইল পড়তে সমস্যা হয়েছে");
+          img.onerror = function () {
+            showToast("ছবি লোড করা বিফল হয়েছে");
           };
-          r.readAsDataURL(file);
-        }
+          img.src = ev.target.result;
+        };
+        r.onerror = function () {
+          showToast("ফাইল পড়তে সমস্যা হয়েছে");
+        };
+        r.readAsDataURL(file);
+      }
 
-        document
-          .getElementById("photo-input")
-          .addEventListener("change", function (e) {
-            var f = e.target.files[0];
-            if (!f) return;
-            handleFile("photo", f);
-            e.target.value = "";
-          });
-        document
-          .getElementById("qr-input")
-          .addEventListener("change", function (e) {
-            var f = e.target.files[0];
-            if (!f) return;
-            handleFile("qr", f);
-            e.target.value = "";
-          });
-        document
-          .getElementById("phone-input")
-          .addEventListener("input", function () {
-            phoneNum = this.value.trim();
-            render();
-          });
-        document
-          .getElementById("msg-input")
-          .addEventListener("input", function () {
-            customMessage = this.value.trim();
-            render();
-          });
+      document
+        .getElementById("photo-input")
+        .addEventListener("change", function (e) {
+          var f = e.target.files[0];
+          if (!f) return;
+          handleFile("photo", f);
+          e.target.value = "";
+        });
+      document
+        .getElementById("qr-input")
+        .addEventListener("change", function (e) {
+          var f = e.target.files[0];
+          if (!f) return;
+          handleFile("qr", f);
+          e.target.value = "";
+        });
+      document
+        .getElementById("phone-input")
+        .addEventListener("input", function () {
+          phoneNum = this.value.trim();
+          render();
+        });
+      document
+        .getElementById("msg-input")
+        .addEventListener("input", function () {
+          customMessage = this.value.trim();
+          render();
+        });
 
-        // Add touch event handlers for upload boxes on mobile
-        var photoBox = document.getElementById("photo-box");
-        var qrBox = document.getElementById("qr-box");
-        if (photoBox) {
-          photoBox.addEventListener(
-            "touchend",
-            function (e) {
-              e.preventDefault();
-              triggerUpload("photo");
-            },
-            false,
-          );
-        }
-        if (qrBox) {
-          qrBox.addEventListener(
-            "touchend",
-            function (e) {
-              e.preventDefault();
-              triggerUpload("qr");
-            },
-            false,
-          );
-        }
+      // Add touch event handlers for upload boxes on mobile
+      var photoBox = document.getElementById("photo-box");
+      var qrBox = document.getElementById("qr-box");
 
-        /* ═══════════════════════════
+      if (photoBox) {
+        photoBox.addEventListener("click", function (e) {
+          e.stopPropagation();
+          triggerUpload("photo");
+        });
+        photoBox.addEventListener(
+          "touchend",
+          function (e) {
+            e.preventDefault();
+            triggerUpload("photo");
+          },
+          { passive: false },
+        );
+      }
+
+      if (qrBox) {
+        qrBox.addEventListener("click", function (e) {
+          e.stopPropagation();
+          triggerUpload("qr");
+        });
+        qrBox.addEventListener(
+          "touchend",
+          function (e) {
+            e.preventDefault();
+            triggerUpload("qr");
+          },
+          { passive: false },
+        );
+      }
+
+      /* ═══════════════════════════
          DRAW HELPERS
       ═══════════════════════════ */
-        function drawStar(c, cx, cy, r, col, pts) {
-          pts = pts || 5;
-          c.save();
-          c.fillStyle = col;
+      function drawStar(c, cx, cy, r, col, pts) {
+        pts = pts || 5;
+        c.save();
+        c.fillStyle = col;
+        c.beginPath();
+        for (var i = 0; i < pts * 2; i++) {
+          var a = (i * Math.PI) / pts - Math.PI / 2,
+            rd = i % 2 === 0 ? r : r * 0.38,
+            x = cx + rd * Math.cos(a),
+            y = cy + rd * Math.sin(a);
+          i === 0 ? c.moveTo(x, y) : c.lineTo(x, y);
+        }
+        c.closePath();
+        c.fill();
+        c.restore();
+      }
+      function drawCrescent(c, cx, cy, r, col) {
+        var oc = document.createElement("canvas");
+        oc.width = oc.height = r * 6;
+        var c2 = oc.getContext("2d"),
+          o = r * 3;
+        c2.fillStyle = col;
+        c2.beginPath();
+        c2.arc(o, o, r, 0, Math.PI * 2);
+        c2.fill();
+        c2.globalCompositeOperation = "destination-out";
+        c2.beginPath();
+        c2.arc(o + r * 0.42, o - r * 0.06, r * 0.78, 0, Math.PI * 2);
+        c2.fill();
+        c.drawImage(oc, cx - r * 3, cy - r * 3);
+      }
+      function drawMosque(c, x, y, w, h, col) {
+        c.save();
+        c.fillStyle = col;
+        var cx2 = x + w / 2;
+        c.beginPath();
+        c.arc(cx2, y + h * 0.4, w * 0.18, Math.PI, 0);
+        c.closePath();
+        c.fill();
+        c.fillRect(cx2 - w * 0.18, y + h * 0.4, w * 0.36, h * 0.6);
+        c.fillRect(cx2 - w * 0.01, y + h * 0.14, w * 0.02, h * 0.26);
+        [
+          [0.22, 0.22],
+          [0.78, 0.22],
+        ].forEach(function (m) {
+          var mx = x + m[0] * w;
           c.beginPath();
-          for (var i = 0; i < pts * 2; i++) {
-            var a = (i * Math.PI) / pts - Math.PI / 2,
-              rd = i % 2 === 0 ? r : r * 0.38,
-              x = cx + rd * Math.cos(a),
-              y = cy + rd * Math.sin(a);
-            i === 0 ? c.moveTo(x, y) : c.lineTo(x, y);
-          }
+          c.arc(mx, y + m[1] * h, w * 0.05, Math.PI, 0);
           c.closePath();
           c.fill();
-          c.restore();
-        }
-        function drawCrescent(c, cx, cy, r, col) {
-          var oc = document.createElement("canvas");
-          oc.width = oc.height = r * 6;
-          var c2 = oc.getContext("2d"),
-            o = r * 3;
-          c2.fillStyle = col;
-          c2.beginPath();
-          c2.arc(o, o, r, 0, Math.PI * 2);
-          c2.fill();
-          c2.globalCompositeOperation = "destination-out";
-          c2.beginPath();
-          c2.arc(o + r * 0.42, o - r * 0.06, r * 0.78, 0, Math.PI * 2);
-          c2.fill();
-          c.drawImage(oc, cx - r * 3, cy - r * 3);
-        }
-        function drawMosque(c, x, y, w, h, col) {
-          c.save();
-          c.fillStyle = col;
-          var cx2 = x + w / 2;
-          c.beginPath();
-          c.arc(cx2, y + h * 0.4, w * 0.18, Math.PI, 0);
-          c.closePath();
-          c.fill();
-          c.fillRect(cx2 - w * 0.18, y + h * 0.4, w * 0.36, h * 0.6);
-          c.fillRect(cx2 - w * 0.01, y + h * 0.14, w * 0.02, h * 0.26);
-          [
-            [0.22, 0.22],
-            [0.78, 0.22],
-          ].forEach(function (m) {
-            var mx = x + m[0] * w;
-            c.beginPath();
-            c.arc(mx, y + m[1] * h, w * 0.05, Math.PI, 0);
-            c.closePath();
-            c.fill();
-            c.fillRect(mx - w * 0.035, y + m[1] * h, w * 0.07, h * 0.6);
-            c.fillRect(mx - w * 0.008, y + h * 0.08, w * 0.016, h * 0.14);
-          });
-          c.restore();
-        }
-        function drawLantern(c, cx, cy, w, h, body, glow) {
-          c.save();
-          var g = c.createRadialGradient(cx, cy, 0, cx, cy, w * 2);
-          g.addColorStop(0, glow + "44");
-          g.addColorStop(1, glow + "00");
-          c.fillStyle = g;
-          c.beginPath();
-          c.ellipse(cx, cy + h * 0.1, w * 1.6, h * 0.8, 0, 0, Math.PI * 2);
-          c.fill();
-          c.fillStyle = body;
-          c.beginPath();
-          c.moveTo(cx - w * 0.5, cy - h * 0.25);
-          c.bezierCurveTo(
-            cx - w * 0.62,
-            cy + h * 0.1,
-            cx - w * 0.55,
-            cy + h * 0.35,
-            cx - w * 0.38,
-            cy + h * 0.42,
+          c.fillRect(mx - w * 0.035, y + m[1] * h, w * 0.07, h * 0.6);
+          c.fillRect(mx - w * 0.008, y + h * 0.08, w * 0.016, h * 0.14);
+        });
+        c.restore();
+      }
+      function drawLantern(c, cx, cy, w, h, body, glow) {
+        c.save();
+        var g = c.createRadialGradient(cx, cy, 0, cx, cy, w * 2);
+        g.addColorStop(0, glow + "44");
+        g.addColorStop(1, glow + "00");
+        c.fillStyle = g;
+        c.beginPath();
+        c.ellipse(cx, cy + h * 0.1, w * 1.6, h * 0.8, 0, 0, Math.PI * 2);
+        c.fill();
+        c.fillStyle = body;
+        c.beginPath();
+        c.moveTo(cx - w * 0.5, cy - h * 0.25);
+        c.bezierCurveTo(
+          cx - w * 0.62,
+          cy + h * 0.1,
+          cx - w * 0.55,
+          cy + h * 0.35,
+          cx - w * 0.38,
+          cy + h * 0.42,
+        );
+        c.lineTo(cx + w * 0.38, cy + h * 0.42);
+        c.bezierCurveTo(
+          cx + w * 0.55,
+          cy + h * 0.35,
+          cx + w * 0.62,
+          cy + h * 0.1,
+          cx + w * 0.5,
+          cy - h * 0.25,
+        );
+        c.closePath();
+        c.fill();
+        c.fillRect(cx - w * 0.3, cy - h * 0.4, w * 0.6, h * 0.15);
+        for (var i = -2; i <= 2; i++)
+          c.fillRect(
+            cx + i * w * 0.18 - w * 0.06,
+            cy + h * 0.4,
+            w * 0.1,
+            h * 0.16,
           );
-          c.lineTo(cx + w * 0.38, cy + h * 0.42);
-          c.bezierCurveTo(
-            cx + w * 0.55,
-            cy + h * 0.35,
-            cx + w * 0.62,
-            cy + h * 0.1,
-            cx + w * 0.5,
-            cy - h * 0.25,
-          );
-          c.closePath();
-          c.fill();
-          c.fillRect(cx - w * 0.3, cy - h * 0.4, w * 0.6, h * 0.15);
-          for (var i = -2; i <= 2; i++)
-            c.fillRect(
-              cx + i * w * 0.18 - w * 0.06,
-              cy + h * 0.4,
-              w * 0.1,
-              h * 0.16,
-            );
-          c.strokeStyle = "rgba(180,160,80,.6)";
-          c.lineWidth = 1.5;
-          c.beginPath();
-          c.moveTo(cx, cy - h * 0.4);
-          c.lineTo(cx, cy - h * 0.65);
-          c.stroke();
-          c.restore();
-        }
-        function rr(c, x, y, w, h, r, col) {
-          c.save();
-          c.fillStyle = col;
-          c.beginPath();
-          c.moveTo(x + r, y);
-          c.lineTo(x + w - r, y);
-          c.arcTo(x + w, y, x + w, y + r, r);
-          c.lineTo(x + w, y + h - r);
-          c.arcTo(x + w, y + h, x + w - r, y + h, r);
-          c.lineTo(x + r, y + h);
-          c.arcTo(x, y + h, x, y + h - r, r);
-          c.lineTo(x, y + r);
-          c.arcTo(x, y, x + r, y, r);
-          c.closePath();
-          c.fill();
-          c.restore();
-        }
-        function rrs(c, x, y, w, h, r, col, lw) {
-          c.save();
-          c.strokeStyle = col;
-          c.lineWidth = lw || 2;
-          c.beginPath();
-          c.moveTo(x + r, y);
-          c.lineTo(x + w - r, y);
-          c.arcTo(x + w, y, x + w, y + r, r);
-          c.lineTo(x + w, y + h - r);
-          c.arcTo(x + w, y + h, x + w - r, y + h, r);
-          c.lineTo(x + r, y + h);
-          c.arcTo(x, y + h, x, y + h - r, r);
-          c.lineTo(x, y + r);
-          c.arcTo(x, y, x + r, y, r);
-          c.closePath();
-          c.stroke();
-          c.restore();
-        }
+        c.strokeStyle = "rgba(180,160,80,.6)";
+        c.lineWidth = 1.5;
+        c.beginPath();
+        c.moveTo(cx, cy - h * 0.4);
+        c.lineTo(cx, cy - h * 0.65);
+        c.stroke();
+        c.restore();
+      }
+      function rr(c, x, y, w, h, r, col) {
+        c.save();
+        c.fillStyle = col;
+        c.beginPath();
+        c.moveTo(x + r, y);
+        c.lineTo(x + w - r, y);
+        c.arcTo(x + w, y, x + w, y + r, r);
+        c.lineTo(x + w, y + h - r);
+        c.arcTo(x + w, y + h, x + w - r, y + h, r);
+        c.lineTo(x + r, y + h);
+        c.arcTo(x, y + h, x, y + h - r, r);
+        c.lineTo(x, y + r);
+        c.arcTo(x, y, x + r, y, r);
+        c.closePath();
+        c.fill();
+        c.restore();
+      }
+      function rrs(c, x, y, w, h, r, col, lw) {
+        c.save();
+        c.strokeStyle = col;
+        c.lineWidth = lw || 2;
+        c.beginPath();
+        c.moveTo(x + r, y);
+        c.lineTo(x + w - r, y);
+        c.arcTo(x + w, y, x + w, y + r, r);
+        c.lineTo(x + w, y + h - r);
+        c.arcTo(x + w, y + h, x + w - r, y + h, r);
+        c.lineTo(x + r, y + h);
+        c.arcTo(x, y + h, x, y + h - r, r);
+        c.lineTo(x, y + r);
+        c.arcTo(x, y, x + r, y, r);
+        c.closePath();
+        c.stroke();
+        c.restore();
+      }
 
-        function blobPath(c, x, y, w, h) {
+      function blobPath(c, x, y, w, h) {
+        c.beginPath();
+        c.moveTo(x + w * 0.2, y + h * 0.06);
+        c.bezierCurveTo(
+          x + w * 0.42,
+          y - h * 0.03,
+          x + w * 0.75,
+          y,
+          x + w * 0.9,
+          y + h * 0.17,
+        );
+        c.bezierCurveTo(
+          x + w * 0.99,
+          y + h * 0.35,
+          x + w * 0.96,
+          y + h * 0.72,
+          x + w * 0.8,
+          y + h * 0.87,
+        );
+        c.bezierCurveTo(
+          x + w * 0.62,
+          y + h * 0.98,
+          x + w * 0.33,
+          y + h * 0.99,
+          x + w * 0.16,
+          y + h * 0.88,
+        );
+        c.bezierCurveTo(
+          x,
+          y + h * 0.74,
+          x - w * 0.03,
+          y + h * 0.35,
+          x + w * 0.08,
+          y + h * 0.15,
+        );
+        c.closePath();
+      }
+
+      /* bKash logo on canvas */
+      function drawBkLogo(c, x, y, targetW) {
+        if (!bkashLogoImg.complete || !bkashLogoImg.naturalWidth) return;
+        var scale = targetW / bkashLogoImg.naturalWidth;
+        var h = bkashLogoImg.naturalHeight * scale;
+        c.save();
+        c.drawImage(bkashLogoImg, x, y, targetW, h);
+        c.restore();
+      }
+
+      function drawNagadLogo(c, x, y, targetW) {
+        if (!nagadLogoImg.complete || !nagadLogoImg.naturalWidth) return;
+        var scale = targetW / nagadLogoImg.naturalWidth;
+        var h = nagadLogoImg.naturalHeight * scale;
+        c.save();
+        c.drawImage(nagadLogoImg, x, y, targetW, h);
+        c.restore();
+      }
+
+      function drawPhoto(c, photo, x, y, w, h, shape) {
+        if (!photo) return;
+        c.save();
+        if (shape === "circle") {
           c.beginPath();
-          c.moveTo(x + w * 0.2, y + h * 0.06);
-          c.bezierCurveTo(
-            x + w * 0.42,
-            y - h * 0.03,
-            x + w * 0.75,
-            y,
-            x + w * 0.9,
-            y + h * 0.17,
-          );
-          c.bezierCurveTo(
-            x + w * 0.99,
-            y + h * 0.35,
-            x + w * 0.96,
-            y + h * 0.72,
-            x + w * 0.8,
-            y + h * 0.87,
-          );
-          c.bezierCurveTo(
-            x + w * 0.62,
-            y + h * 0.98,
-            x + w * 0.33,
-            y + h * 0.99,
-            x + w * 0.16,
-            y + h * 0.88,
-          );
-          c.bezierCurveTo(
-            x,
-            y + h * 0.74,
-            x - w * 0.03,
-            y + h * 0.35,
-            x + w * 0.08,
-            y + h * 0.15,
-          );
-          c.closePath();
-        }
-
-        /* bKash logo on canvas */
-        function drawBkLogo(c, x, y, targetW) {
-          if (!bkashLogoImg.complete || !bkashLogoImg.naturalWidth) return;
-          var scale = targetW / bkashLogoImg.naturalWidth;
-          var h = bkashLogoImg.naturalHeight * scale;
-          c.save();
-          c.drawImage(bkashLogoImg, x, y, targetW, h);
-          c.restore();
-        }
-
-        function drawNagadLogo(c, x, y, targetW) {
-          if (!nagadLogoImg.complete || !nagadLogoImg.naturalWidth) return;
-          var scale = targetW / nagadLogoImg.naturalWidth;
-          var h = nagadLogoImg.naturalHeight * scale;
-          c.save();
-          c.drawImage(nagadLogoImg, x, y, targetW, h);
-          c.restore();
-        }
-
-        function drawPhoto(c, photo, x, y, w, h, shape) {
-          if (!photo) return;
-          c.save();
-          if (shape === "circle") {
-            c.beginPath();
-            c.arc(x + w / 2, y + h / 2, Math.min(w, h) / 2, 0, Math.PI * 2);
-            c.clip();
-          } else if (shape === "rounded") {
-            var r2 = w * 0.08;
-            c.beginPath();
-            c.moveTo(x + r2, y);
-            c.lineTo(x + w - r2, y);
-            c.arcTo(x + w, y, x + w, y + r2, r2);
-            c.lineTo(x + w, y + h - r2);
-            c.arcTo(x + w, y + h, x + w - r2, y + h, r2);
-            c.lineTo(x + r2, y + h);
-            c.arcTo(x, y + h, x, y + h - r2, r2);
-            c.lineTo(x, y + r2);
-            c.arcTo(x, y, x + r2, y, r2);
-            c.closePath();
-            c.clip();
-          } else {
-            c.rect(x, y, w, h);
-            c.clip();
-          }
-          var sc = Math.max(w / photo.width, h / photo.height);
-          var pw = photo.width * sc,
-            ph2 = photo.height * sc;
-          c.drawImage(photo, x + (w - pw) / 2, y + (h - ph2) / 2, pw, ph2);
-          c.restore();
-        }
-        function drawQR(c, qr, x, y, size) {
-          if (!qr) return;
-          c.save();
-          rr(
-            c,
-            x - size * 0.06,
-            y - size * 0.06,
-            size * 1.12,
-            size * 1.12,
-            size * 0.08,
-            "#fff",
-          );
-          var r2 = size * 0.06;
+          c.arc(x + w / 2, y + h / 2, Math.min(w, h) / 2, 0, Math.PI * 2);
+          c.clip();
+        } else if (shape === "rounded") {
+          var r2 = w * 0.08;
           c.beginPath();
           c.moveTo(x + r2, y);
-          c.lineTo(x + size - r2, y);
-          c.arcTo(x + size, y, x + size, y + r2, r2);
-          c.lineTo(x + size, y + size - r2);
-          c.arcTo(x + size, y + size, x + size - r2, y + size, r2);
-          c.lineTo(x + r2, y + size);
-          c.arcTo(x, y + size, x, y + size - r2, r2);
+          c.lineTo(x + w - r2, y);
+          c.arcTo(x + w, y, x + w, y + r2, r2);
+          c.lineTo(x + w, y + h - r2);
+          c.arcTo(x + w, y + h, x + w - r2, y + h, r2);
+          c.lineTo(x + r2, y + h);
+          c.arcTo(x, y + h, x, y + h - r2, r2);
           c.lineTo(x, y + r2);
           c.arcTo(x, y, x + r2, y, r2);
           c.closePath();
           c.clip();
-          var sc = Math.max(size / qr.width, size / qr.height);
-          var qw = qr.width * sc,
-            qh = qr.height * sc;
-          c.drawImage(qr, x + (size - qw) / 2, y + (size - qh) / 2, qw, qh);
-          c.restore();
+        } else {
+          c.rect(x, y, w, h);
+          c.clip();
         }
+        var sc = Math.max(w / photo.width, h / photo.height);
+        var pw = photo.width * sc,
+          ph2 = photo.height * sc;
+        c.drawImage(photo, x + (w - pw) / 2, y + (h - ph2) / 2, pw, ph2);
+        c.restore();
+      }
+      function drawQR(c, qr, x, y, size) {
+        if (!qr) return;
+        c.save();
+        rr(
+          c,
+          x - size * 0.06,
+          y - size * 0.06,
+          size * 1.12,
+          size * 1.12,
+          size * 0.08,
+          "#fff",
+        );
+        var r2 = size * 0.06;
+        c.beginPath();
+        c.moveTo(x + r2, y);
+        c.lineTo(x + size - r2, y);
+        c.arcTo(x + size, y, x + size, y + r2, r2);
+        c.lineTo(x + size, y + size - r2);
+        c.arcTo(x + size, y + size, x + size - r2, y + size, r2);
+        c.lineTo(x + r2, y + size);
+        c.arcTo(x, y + size, x, y + size - r2, r2);
+        c.lineTo(x, y + r2);
+        c.arcTo(x, y, x + r2, y, r2);
+        c.closePath();
+        c.clip();
+        var sc = Math.max(size / qr.width, size / qr.height);
+        var qw = qr.width * sc,
+          qh = qr.height * sc;
+        c.drawImage(qr, x + (size - qw) / 2, y + (size - qh) / 2, qw, qh);
+        c.restore();
+      }
 
-        function drawPosterMessage(c, s, msg) {
-          var text = (msg || "").trim();
+      function drawPosterMessage(c, s, msg) {
+        var text = (msg || "").trim();
 
-          if (currentTpl === 2) {
-            if (!text) return;
+        if (currentTpl === 2) {
+          if (!text) return;
 
-            var words = text.slice(0, 120).split(/\s+/);
-            var lines = [];
-            var line = "";
-            var maxW = s * 0.89;
-            var x = s * 0.055;
-            var y = s * 0.802;
-            var lineH = s * 0.036;
+          var words = text.slice(0, 120).split(/\s+/);
+          var lines = [];
+          var line = "";
+          var maxW = s * 0.89;
+          var x = s * 0.055;
+          var y = s * 0.802;
+          var lineH = s * 0.036;
 
-            c.save();
-            c.font = Math.round(s * 0.03) + "px " + FONT_SERIF;
-            c.fillStyle = "#FFD7EE";
-            c.textAlign = "left";
-            c.textBaseline = "top";
-            c.shadowColor = "rgba(0,0,0,.4)";
-            c.shadowBlur = 10;
-
-            words.forEach(function (w) {
-              var test = line ? line + " " + w : w;
-              if (c.measureText(test).width <= maxW) {
-                line = test;
-              } else {
-                if (line) lines.push(line);
-                line = w;
-              }
-            });
-            if (line) lines.push(line);
-
-            lines.slice(0, 3).forEach(function (ln, i) {
-              c.fillText(ln, x, y + i * lineH);
-            });
-            c.restore();
-            return;
-          }
-
-          if (!text) text = "ঈদ মোবারক";
           c.save();
-          rr(
-            c,
-            s * 0.12,
-            s * 0.845,
-            s * 0.76,
-            s * 0.055,
-            s * 0.028,
-            "rgba(255,255,255,.18)",
-          );
-          c.font = "700 " + Math.round(s * 0.024) + "px " + FONT_SERIF;
-          c.fillStyle = "#fff";
-          c.textAlign = "center";
-          c.textBaseline = "middle";
-          c.shadowColor = "rgba(0,0,0,.28)";
-          c.shadowBlur = 8;
-          c.fillText(text.slice(0, 36), s * 0.5, s * 0.872);
+          c.font = Math.round(s * 0.03) + "px " + FONT_SERIF;
+          c.fillStyle = "#FFD7EE";
+          c.textAlign = "left";
+          c.textBaseline = "top";
+          c.shadowColor = "rgba(0,0,0,.4)";
+          c.shadowBlur = 10;
+
+          words.forEach(function (w) {
+            var test = line ? line + " " + w : w;
+            if (c.measureText(test).width <= maxW) {
+              line = test;
+            } else {
+              if (line) lines.push(line);
+              line = w;
+            }
+          });
+          if (line) lines.push(line);
+
+          lines.slice(0, 3).forEach(function (ln, i) {
+            c.fillText(ln, x, y + i * lineH);
+          });
           c.restore();
+          return;
         }
 
-        /* ═══════════════════════════
+        if (!text) text = "ঈদ মোবারক";
+        c.save();
+        rr(
+          c,
+          s * 0.12,
+          s * 0.845,
+          s * 0.76,
+          s * 0.055,
+          s * 0.028,
+          "rgba(255,255,255,.18)",
+        );
+        c.font = "700 " + Math.round(s * 0.024) + "px " + FONT_SERIF;
+        c.fillStyle = "#fff";
+        c.textAlign = "center";
+        c.textBaseline = "middle";
+        c.shadowColor = "rgba(0,0,0,.28)";
+        c.shadowBlur = 8;
+        c.fillText(text.slice(0, 36), s * 0.5, s * 0.872);
+        c.restore();
+      }
+
+      /* ═══════════════════════════
         TEMPLATES
       ═══════════════════════════ */
-        var TEMPLATES = [
-          /* 0 — Clasic Bkash */
-          {
-            name: "Clasic Bkash",
-            draw: function (c, s, photo, qr, phone) {
-              var bg = c.createLinearGradient(0, 0, s, s);
-              bg.addColorStop(0, "#FFE4F4");
-              bg.addColorStop(0.5, "#FFB8E0");
-              bg.addColorStop(1, "#FF78C4");
-              c.fillStyle = bg;
-              c.fillRect(0, 0, s, s);
-              // Diagonal accent
+      var TEMPLATES = [
+        /* 0 — Clasic Bkash */
+        {
+          name: "Clasic Bkash",
+          draw: function (c, s, photo, qr, phone) {
+            var bg = c.createLinearGradient(0, 0, s, s);
+            bg.addColorStop(0, "#FFE4F4");
+            bg.addColorStop(0.5, "#FFB8E0");
+            bg.addColorStop(1, "#FF78C4");
+            c.fillStyle = bg;
+            c.fillRect(0, 0, s, s);
+            // Diagonal accent
+            c.save();
+            c.fillStyle = "rgba(233,30,140,.17)";
+            c.beginPath();
+            c.moveTo(s * 0.42, 0);
+            c.lineTo(s, 0);
+            c.lineTo(s, s * 0.85);
+            c.lineTo(s * 0.28, 0);
+            c.closePath();
+            c.fill();
+            c.fillStyle = "rgba(233,30,140,.1)";
+            c.beginPath();
+            c.moveTo(s * 0.55, 0);
+            c.lineTo(s, 0);
+            c.lineTo(s, s * 0.55);
+            c.closePath();
+            c.fill();
+            c.restore();
+            // Right pink block
+            c.save();
+            var pk = c.createLinearGradient(s * 0.55, 0, s, s);
+            pk.addColorStop(0, "rgba(233,30,140,.32)");
+            pk.addColorStop(1, "rgba(180,0,80,.48)");
+            c.fillStyle = pk;
+            c.beginPath();
+            c.moveTo(s * 0.57, s * 0.3);
+            c.lineTo(s, s * 0.1);
+            c.lineTo(s, s * 0.94);
+            c.lineTo(s * 0.5, s * 0.92);
+            c.closePath();
+            c.fill();
+            c.restore();
+            // Stars top right
+            [
+              [0.84, 0.07, 0.028, "#E91E8C"],
+              [0.92, 0.14, 0.02, "#C2006A"],
+              [0.78, 0.12, 0.016, "#FF4DB8"],
+            ].forEach(function (p) {
+              drawStar(c, s * p[0], s * p[1], s * p[2], p[3]);
+            });
+            // Hanging stars
+            [
+              [s * 0.88, s * 0.04, s * 0.88, s * 0.18, "#E91E8C"],
+              [s * 0.93, s * 0.06, s * 0.93, s * 0.23, "#C2006A"],
+            ].forEach(function (ln) {
               c.save();
-              c.fillStyle = "rgba(233,30,140,.17)";
+              c.strokeStyle = ln[4];
+              c.lineWidth = 1.2;
+              c.setLineDash([3, 4]);
               c.beginPath();
-              c.moveTo(s * 0.42, 0);
-              c.lineTo(s, 0);
-              c.lineTo(s, s * 0.85);
-              c.lineTo(s * 0.28, 0);
-              c.closePath();
-              c.fill();
-              c.fillStyle = "rgba(233,30,140,.1)";
-              c.beginPath();
-              c.moveTo(s * 0.55, 0);
-              c.lineTo(s, 0);
-              c.lineTo(s, s * 0.55);
-              c.closePath();
-              c.fill();
-              c.restore();
-              // Right pink block
-              c.save();
-              var pk = c.createLinearGradient(s * 0.55, 0, s, s);
-              pk.addColorStop(0, "rgba(233,30,140,.32)");
-              pk.addColorStop(1, "rgba(180,0,80,.48)");
-              c.fillStyle = pk;
-              c.beginPath();
-              c.moveTo(s * 0.57, s * 0.3);
-              c.lineTo(s, s * 0.1);
-              c.lineTo(s, s * 0.94);
-              c.lineTo(s * 0.5, s * 0.92);
-              c.closePath();
-              c.fill();
-              c.restore();
-              // Stars top right
-              [
-                [0.84, 0.07, 0.028, "#E91E8C"],
-                [0.92, 0.14, 0.02, "#C2006A"],
-                [0.78, 0.12, 0.016, "#FF4DB8"],
-              ].forEach(function (p) {
-                drawStar(c, s * p[0], s * p[1], s * p[2], p[3]);
-              });
-              // Hanging stars
-              [
-                [s * 0.88, s * 0.04, s * 0.88, s * 0.18, "#E91E8C"],
-                [s * 0.93, s * 0.06, s * 0.93, s * 0.23, "#C2006A"],
-              ].forEach(function (ln) {
-                c.save();
-                c.strokeStyle = ln[4];
-                c.lineWidth = 1.2;
-                c.setLineDash([3, 4]);
-                c.beginPath();
-                c.moveTo(ln[0], ln[1]);
-                c.lineTo(ln[2], ln[3]);
-                c.stroke();
-                c.setLineDash([]);
-                c.restore();
-                drawStar(c, ln[2], ln[3] + s * 0.024, s * 0.026, ln[4]);
-              });
-              // Mosque silhouette faint left bottom
-              drawMosque(
-                c,
-                s * 0.01,
-                s * 0.72,
-                s * 0.22,
-                s * 0.28,
-                "rgba(233,30,140,.15)",
-              );
-              // User photo right
-              var fx = s * 0.56,
-                fy = s * 0.4,
-                fw = s * 0.42,
-                fh = s * 0.42;
-              if (photo) {
-                // Pink blob-style frame similar to the sample rounded shape.
-                c.save();
-                c.fillStyle = "rgba(233,30,140,.22)";
-                blobPath(
-                  c,
-                  fx - s * 0.028,
-                  fy - s * 0.026,
-                  fw + s * 0.056,
-                  fh + s * 0.052,
-                );
-                c.fill();
-
-                c.lineWidth = s * 0.013;
-                c.strokeStyle = "rgba(233,30,140,.8)";
-                blobPath(
-                  c,
-                  fx - s * 0.008,
-                  fy - s * 0.008,
-                  fw + s * 0.016,
-                  fh + s * 0.016,
-                );
-                c.stroke();
-
-                c.save();
-                blobPath(c, fx, fy, fw, fh);
-                c.clip();
-                var psc = Math.max(fw / photo.width, fh / photo.height);
-                var pw = photo.width * psc,
-                  phh = photo.height * psc;
-                c.drawImage(
-                  photo,
-                  fx + (fw - pw) / 2,
-                  fy + (fh - phh) / 2,
-                  pw,
-                  phh,
-                );
-                c.restore();
-                c.restore();
-              } else {
-                c.save();
-                c.fillStyle = "rgba(233,30,140,.2)";
-                blobPath(c, fx, fy, fw, fh);
-                c.fill();
-                c.save();
-                c.font = Math.round(s * 0.03) + "px " + FONT_SANS;
-                c.fillStyle = "rgba(180,0,90,.55)";
-                c.textAlign = "center";
-                c.textBaseline = "middle";
-                c.fillText("আপনার ছবি", fx + fw / 2, fy + fh / 2);
-                c.restore();
-                c.restore();
-              }
-              // bKash logo top left
-              drawBkLogo(c, s * 0.05, s * -0.02, s * 0.18);
-              // Text
-              c.save();
-              c.shadowColor = "rgba(0,0,0,.15)";
-              c.shadowBlur = 6;
-              c.font = Math.round(s * 0.052) + "px " + FONT_SERIF;
-              c.fillStyle = "#2d0018";
-              c.textAlign = "left";
-              c.textBaseline = "top";
-              c.fillText("ঈদ এর চাঁদ আকাশে", s * 0.05, s * 0.15);
-              c.font = "600 " + Math.round(s * 0.058) + "px " + FONT_SERIF;
-              c.fillStyle = "#1a0010";
-              c.fillText("সালামি দিন", s * 0.05, s * 0.222);
-              c.font = "bold " + Math.round(s * 0.112) + "px " + FONT_SERIF;
-              c.fillStyle = "#E91E8C";
-              c.shadowColor = "rgba(233,30,140,.3)";
-              c.shadowBlur = 18;
-              c.fillText("বিকাশে", s * 0.05, s * 0.292);
-              c.restore();
-              // QR
-              var qx = s * 0.055,
-                qy = s * 0.445,
-                qsz = s * 0.27;
-              if (qr) {
-                rr(
-                  c,
-                  qx - s * 0.018,
-                  qy - s * 0.018,
-                  qsz + s * 0.036,
-                  qsz + s * 0.036,
-                  s * 0.03,
-                  "#fff",
-                );
-                rrs(
-                  c,
-                  qx - s * 0.018,
-                  qy - s * 0.018,
-                  qsz + s * 0.036,
-                  qsz + s * 0.036,
-                  s * 0.03,
-                  "#E91E8C",
-                  s * 0.0045,
-                );
-                drawQR(c, qr, qx, qy, qsz);
-              } else {
-                rr(
-                  c,
-                  qx - s * 0.018,
-                  qy - s * 0.018,
-                  qsz + s * 0.036,
-                  qsz + s * 0.036,
-                  s * 0.03,
-                  "rgba(255,255,255,.7)",
-                );
-                rrs(
-                  c,
-                  qx - s * 0.018,
-                  qy - s * 0.018,
-                  qsz + s * 0.036,
-                  qsz + s * 0.036,
-                  s * 0.03,
-                  "#E91E8C",
-                  s * 0.004,
-                );
-                c.save();
-                c.font = Math.round(s * 0.024) + "px " + FONT_SANS;
-                c.fillStyle = "rgba(200,0,90,.55)";
-                c.textAlign = "center";
-                c.textBaseline = "middle";
-                c.fillText("QR কোড এখানে", qx + qsz / 2, qy + qsz / 2);
-                c.restore();
-              }
-              // Scan text
-              c.save();
-              c.font = "600 " + Math.round(s * 0.027) + "px " + FONT_SERIF;
-              c.fillStyle = "#1a0010";
-              c.textAlign = "left";
-              c.textBaseline = "top";
-              c.shadowColor = "rgba(0,0,0,.1)";
-              c.shadowBlur = 4;
-              c.fillText("বিকাশ অ্যাপে স্ক্যান করুন", s * 0.052, s * 0.764);
-              c.font = Math.round(s * 0.024) + "px " + FONT_SANS;
-              c.fillStyle = "rgba(50,0,30,.75)";
-              c.fillText("আর পাঠিয়ে দিন সালামি", s * 0.052, s * 0.806);
-              c.restore();
-              // Footer strip (sample-style)
-              var ph = phone || "01*********",
-                stripX = 0,
-                stripY = s * 0.92,
-                stripW = s,
-                stripH = s * 0.08,
-                leftW = s * 0.38;
-
-              var sg = c.createLinearGradient(
-                stripX,
-                stripY,
-                stripX + stripW,
-                stripY,
-              );
-              sg.addColorStop(0, "#E91E8C");
-              sg.addColorStop(1, "#B30062");
-              c.fillStyle = sg;
-              c.fillRect(stripX, stripY, stripW, stripH);
-
-              c.fillStyle = "rgba(90,0,50,.32)";
-              c.fillRect(stripX, stripY, leftW, stripH);
-
-              c.fillStyle = "rgba(255,255,255,.16)";
-              c.fillRect(stripX, stripY, stripW, s * 0.003);
-
-              c.save();
-              drawMosque(
-                c,
-                stripX + s * 0.03,
-                stripY + s * 0.012,
-                s * 0.068,
-                s * 0.056,
-                "#FFD16F",
-              );
-              drawCrescent(
-                c,
-                stripX + s * 0.079,
-                stripY + s * 0.025,
-                s * 0.012,
-                "#FFD16F",
-              );
-              drawStar(
-                c,
-                stripX + s * 0.09,
-                stripY + s * 0.018,
-                s * 0.006,
-                "#FFD16F",
-                6,
-              );
-              c.font = "700 " + Math.round(s * 0.026) + "px " + FONT_SERIF;
-              c.fillStyle = "#FFD16F";
-              c.textAlign = "left";
-              c.textBaseline = "middle";
-              c.fillText(
-                "ঈদ মোবারক",
-                stripX + s * 0.122,
-                stripY + stripH * 0.56,
-              );
-              c.restore();
-
-              c.save();
-              c.font = "600 " + Math.round(s * 0.022) + "px " + FONT_SANS;
-              c.fillStyle = "rgba(255,228,245,.95)";
-              c.textAlign = "left";
-              c.textBaseline = "middle";
-              c.fillText(
-                "বিকাশ নম্বরঃ",
-                stripX + leftW + s * 0.028,
-                stripY + stripH * 0.52,
-              );
-
-              // Draw phone number with Bangla digits
-              var phoneDisplayNum = englishToBanglaDigits(ph);
-              c.font = "600 " + Math.round(s * 0.032) + "px " + FONT_SERIF;
-              c.fillStyle = "#FFE8F6";
-              c.fillText(
-                phoneDisplayNum,
-                stripX + leftW + s * 0.198,
-                stripY + stripH * 0.52,
-              );
-              c.restore();
-            },
-          },
-
-          /* 1 — Clasic Nagad */
-          {
-            name: "Clasic Nagad",
-            brand: "nagad",
-            draw: function (c, s, photo, qr, phone) {
-              var bg = c.createLinearGradient(0, 0, s, s);
-              bg.addColorStop(0, "#FFF1E1");
-              bg.addColorStop(0.48, "#FFC986");
-              bg.addColorStop(1, "#FF9A2C");
-              c.fillStyle = bg;
-              c.fillRect(0, 0, s, s);
-
-              c.save();
-              c.fillStyle = "rgba(185,70,0,.14)";
-              c.beginPath();
-              c.moveTo(s * 0.42, 0);
-              c.lineTo(s, 0);
-              c.lineTo(s, s * 0.9);
-              c.lineTo(s * 0.24, s * 0.18);
-              c.closePath();
-              c.fill();
-              c.restore();
-
-              var sand = c.createLinearGradient(s * 0.54, 0, s, s);
-              sand.addColorStop(0, "rgba(255,138,0,.26)");
-              sand.addColorStop(1, "rgba(170,60,0,.4)");
-              c.fillStyle = sand;
-              c.beginPath();
-              c.moveTo(s * 0.56, s * 0.28);
-              c.lineTo(s, s * 0.08);
-              c.lineTo(s, s * 0.95);
-              c.lineTo(s * 0.48, s * 0.91);
-              c.closePath();
-              c.fill();
-
-              [
-                [0.84, 0.07, 0.028, "#F36A10"],
-                [0.92, 0.14, 0.02, "#D55700"],
-                [0.78, 0.12, 0.016, "#FF8D38"],
-              ].forEach(function (p) {
-                drawStar(c, s * p[0], s * p[1], s * p[2], p[3]);
-              });
-
-              [
-                [s * 0.88, s * 0.04, s * 0.88, s * 0.18, "#E96510"],
-                [s * 0.93, s * 0.06, s * 0.93, s * 0.23, "#C95100"],
-              ].forEach(function (ln) {
-                c.save();
-                c.strokeStyle = ln[4];
-                c.lineWidth = 1.2;
-                c.setLineDash([3, 4]);
-                c.beginPath();
-                c.moveTo(ln[0], ln[1]);
-                c.lineTo(ln[2], ln[3]);
-                c.stroke();
-                c.setLineDash([]);
-                c.restore();
-                drawStar(c, ln[2], ln[3] + s * 0.024, s * 0.026, ln[4]);
-              });
-
-              drawMosque(
-                c,
-                s * 0.01,
-                s * 0.72,
-                s * 0.22,
-                s * 0.28,
-                "rgba(185,70,0,.14)",
-              );
-
-              var fx = s * 0.56,
-                fy = s * 0.4,
-                fw = s * 0.42,
-                fh = s * 0.42;
-              if (photo) {
-                c.save();
-                c.fillStyle = "rgba(224,92,8,.2)";
-                blobPath(
-                  c,
-                  fx - s * 0.028,
-                  fy - s * 0.026,
-                  fw + s * 0.056,
-                  fh + s * 0.052,
-                );
-                c.fill();
-
-                c.lineWidth = s * 0.013;
-                c.strokeStyle = "rgba(208,84,0,.8)";
-                blobPath(
-                  c,
-                  fx - s * 0.008,
-                  fy - s * 0.008,
-                  fw + s * 0.016,
-                  fh + s * 0.016,
-                );
-                c.stroke();
-
-                c.save();
-                blobPath(c, fx, fy, fw, fh);
-                c.clip();
-                var psc = Math.max(fw / photo.width, fh / photo.height);
-                var pw = photo.width * psc,
-                  phh = photo.height * psc;
-                c.drawImage(
-                  photo,
-                  fx + (fw - pw) / 2,
-                  fy + (fh - phh) / 2,
-                  pw,
-                  phh,
-                );
-                c.restore();
-                c.restore();
-              } else {
-                c.save();
-                c.fillStyle = "rgba(235,110,20,.22)";
-                blobPath(c, fx, fy, fw, fh);
-                c.fill();
-                c.font = Math.round(s * 0.03) + "px " + FONT_SANS;
-                c.fillStyle = "rgba(150,60,0,.52)";
-                c.textAlign = "center";
-                c.textBaseline = "middle";
-                c.fillText("আপনার ছবি", fx + fw / 2, fy + fh / 2);
-                c.restore();
-              }
-
-              drawNagadLogo(c, s * 0.02, s * 0.01, s * 0.18);
-
-              c.save();
-              c.shadowColor = "rgba(0,0,0,.15)";
-              c.shadowBlur = 6;
-              c.font = Math.round(s * 0.052) + "px " + FONT_SERIF;
-              c.fillStyle = "#4B1D00";
-              c.textAlign = "left";
-              c.textBaseline = "top";
-              c.fillText("ঈদ এলো জগতে,", s * 0.05, s * 0.15);
-              c.font = "600 " + Math.round(s * 0.058) + "px " + FONT_SERIF;
-              c.fillStyle = "#3A1700";
-              c.fillText("সালামি দিন", s * 0.05, s * 0.222);
-              c.font = "bold " + Math.round(s * 0.112) + "px " + FONT_SERIF;
-              c.fillStyle = "#EA6100";
-              c.shadowColor = "rgba(234,97,0,.3)";
-              c.shadowBlur = 18;
-              c.fillText("নগদে", s * 0.05, s * 0.292);
-              c.restore();
-
-              var qx = s * 0.055,
-                qy = s * 0.445,
-                qsz = s * 0.27;
-              if (qr) {
-                rr(
-                  c,
-                  qx - s * 0.018,
-                  qy - s * 0.018,
-                  qsz + s * 0.036,
-                  qsz + s * 0.036,
-                  s * 0.03,
-                  "#fff",
-                );
-                rrs(
-                  c,
-                  qx - s * 0.018,
-                  qy - s * 0.018,
-                  qsz + s * 0.036,
-                  qsz + s * 0.036,
-                  s * 0.03,
-                  "#EA6100",
-                  s * 0.0045,
-                );
-                drawQR(c, qr, qx, qy, qsz);
-              } else {
-                rr(
-                  c,
-                  qx - s * 0.018,
-                  qy - s * 0.018,
-                  qsz + s * 0.036,
-                  qsz + s * 0.036,
-                  s * 0.03,
-                  "rgba(255,255,255,.7)",
-                );
-                rrs(
-                  c,
-                  qx - s * 0.018,
-                  qy - s * 0.018,
-                  qsz + s * 0.036,
-                  qsz + s * 0.036,
-                  s * 0.03,
-                  "#EA6100",
-                  s * 0.004,
-                );
-                c.save();
-                c.font = Math.round(s * 0.024) + "px " + FONT_SANS;
-                c.fillStyle = "rgba(160,65,0,.58)";
-                c.textAlign = "center";
-                c.textBaseline = "middle";
-                c.fillText("QR কোড এখানে", qx + qsz / 2, qy + qsz / 2);
-                c.restore();
-              }
-
-              c.save();
-              c.font = "600 " + Math.round(s * 0.027) + "px " + FONT_SERIF;
-              c.fillStyle = "#3A1700";
-              c.textAlign = "left";
-              c.textBaseline = "top";
-              c.fillText("নগদ অ্যাপে স্ক্যান করুন", s * 0.052, s * 0.764);
-              c.font = Math.round(s * 0.024) + "px " + FONT_SANS;
-              c.fillStyle = "rgba(70,25,0,.76)";
-              c.fillText("আর পাঠিয়ে দিন সালামি", s * 0.052, s * 0.806);
-              c.restore();
-
-              var ph = phone || "013********",
-                stripX = 0,
-                stripY = s * 0.92,
-                stripW = s,
-                stripH = s * 0.08,
-                leftW = s * 0.38;
-
-              var sg = c.createLinearGradient(
-                stripX,
-                stripY,
-                stripX + stripW,
-                stripY,
-              );
-              sg.addColorStop(0, "#EA6100");
-              sg.addColorStop(1, "#B74900");
-              c.fillStyle = sg;
-              c.fillRect(stripX, stripY, stripW, stripH);
-              c.fillStyle = "rgba(95,35,0,.32)";
-              c.fillRect(stripX, stripY, leftW, stripH);
-              c.fillStyle = "rgba(255,255,255,.16)";
-              c.fillRect(stripX, stripY, stripW, s * 0.003);
-
-              c.save();
-              drawMosque(
-                c,
-                stripX + s * 0.03,
-                stripY + s * 0.012,
-                s * 0.068,
-                s * 0.056,
-                "#FFD693",
-              );
-              drawCrescent(
-                c,
-                stripX + s * 0.079,
-                stripY + s * 0.025,
-                s * 0.012,
-                "#FFD693",
-              );
-              drawStar(
-                c,
-                stripX + s * 0.09,
-                stripY + s * 0.018,
-                s * 0.006,
-                "#FFD693",
-                6,
-              );
-              c.font = "700 " + Math.round(s * 0.026) + "px " + FONT_SERIF;
-              c.fillStyle = "#FFE2B3";
-              c.textAlign = "left";
-              c.textBaseline = "middle";
-              c.fillText(
-                "ঈদ মোবারক",
-                stripX + s * 0.122,
-                stripY + stripH * 0.56,
-              );
-              c.restore();
-
-              c.save();
-              c.font = "600 " + Math.round(s * 0.022) + "px " + FONT_SANS;
-              c.fillStyle = "rgba(255,236,215,.95)";
-              c.textAlign = "left";
-              c.textBaseline = "middle";
-              c.fillText(
-                "নগদ নম্বরঃ",
-                stripX + leftW + s * 0.028,
-                stripY + stripH * 0.52,
-              );
-
-              // Draw phone number with Bangla digits
-              var phoneDisplayNum = englishToBanglaDigits(ph);
-              c.font = "600 " + Math.round(s * 0.032) + "px " + FONT_SERIF;
-              c.fillStyle = "#FFF0D8";
-              c.fillText(
-                phoneDisplayNum,
-                stripX + leftW + s * 0.198,
-                stripY + stripH * 0.52,
-              );
-              c.restore();
-            },
-          },
-
-          /* 2 — ডার্ক এলিগ্যান্ট */
-          {
-            name: "ডার্ক এলিগ্যান্ট",
-            draw: function (c, s, photo, qr, phone) {
-              var bg = c.createLinearGradient(0, 0, s, s);
-              bg.addColorStop(0, "#0d0006");
-              bg.addColorStop(0.5, "#1e0012");
-              bg.addColorStop(1, "#100008");
-              c.fillStyle = bg;
-              c.fillRect(0, 0, s, s);
-              var g1 = c.createRadialGradient(
-                s * 0.15,
-                s * 0.3,
-                0,
-                s * 0.15,
-                s * 0.3,
-                s * 0.4,
-              );
-              g1.addColorStop(0, "rgba(233,30,140,.22)");
-              g1.addColorStop(1, "rgba(233,30,140,0)");
-              c.fillStyle = g1;
-              c.fillRect(0, 0, s, s);
-              var g2 = c.createRadialGradient(
-                s * 0.85,
-                s * 0.7,
-                0,
-                s * 0.85,
-                s * 0.7,
-                s * 0.38,
-              );
-              g2.addColorStop(0, "rgba(200,0,100,.18)");
-              g2.addColorStop(1, "rgba(200,0,100,0)");
-              c.fillStyle = g2;
-              c.fillRect(0, 0, s, s);
-              drawMosque(
-                c,
-                s * 0.06,
-                s * 0.68,
-                s * 0.36,
-                s * 0.32,
-                "rgba(233,30,140,.1)",
-              );
-              drawMosque(
-                c,
-                s * 0.58,
-                s * 0.72,
-                s * 0.36,
-                s * 0.28,
-                "rgba(233,30,140,.08)",
-              );
-              // Border arches
-              c.save();
-              c.strokeStyle = "rgba(233,30,140,.5)";
-              c.lineWidth = s * 0.004;
-              c.beginPath();
-              c.moveTo(s * 0.04, s * 0.25);
-              c.lineTo(s * 0.04, s * 0.04);
-              c.lineTo(s * 0.96, s * 0.04);
-              c.lineTo(s * 0.96, s * 0.25);
+              c.moveTo(ln[0], ln[1]);
+              c.lineTo(ln[2], ln[3]);
               c.stroke();
-              c.beginPath();
-              c.moveTo(s * 0.04, s * 0.96);
-              c.lineTo(s * 0.04, s * 0.78);
-              c.lineTo(s * 0.96, s * 0.78);
-              c.lineTo(s * 0.96, s * 0.96);
-              c.lineTo(s * 0.04, s * 0.96);
-              c.closePath();
-              c.stroke();
+              c.setLineDash([]);
               c.restore();
-              [
-                [s * 0.04, s * 0.04],
-                [s * 0.96, s * 0.04],
-                [s * 0.04, s * 0.96],
-                [s * 0.96, s * 0.96],
-              ].forEach(function (p) {
-                drawStar(c, p[0], p[1], s * 0.022, "rgba(233,30,140,.7)", 8);
-              });
-              drawCrescent(c, s * 0.46, s * 0.078, s * 0.044, "#FF4DB8");
-              drawStar(c, s * 0.558, s * 0.057, s * 0.023, "#FF8CD8");
-              drawLantern(
+              drawStar(c, ln[2], ln[3] + s * 0.024, s * 0.026, ln[4]);
+            });
+            // Mosque silhouette faint left bottom
+            drawMosque(
+              c,
+              s * 0.01,
+              s * 0.72,
+              s * 0.22,
+              s * 0.28,
+              "rgba(233,30,140,.15)",
+            );
+            // User photo right
+            var fx = s * 0.56,
+              fy = s * 0.4,
+              fw = s * 0.42,
+              fh = s * 0.42;
+            if (photo) {
+              // Pink blob-style frame similar to the sample rounded shape.
+              c.save();
+              c.fillStyle = "rgba(233,30,140,.22)";
+              blobPath(
                 c,
-                s * 0.18,
-                s * 0.092,
-                s * 0.037,
-                s * 0.064,
-                "#8B0040",
-                "#FF4DB8",
+                fx - s * 0.028,
+                fy - s * 0.026,
+                fw + s * 0.056,
+                fh + s * 0.052,
               );
-              drawLantern(
+              c.fill();
+
+              c.lineWidth = s * 0.013;
+              c.strokeStyle = "rgba(233,30,140,.8)";
+              blobPath(
                 c,
-                s * 0.82,
-                s * 0.092,
-                s * 0.037,
-                s * 0.064,
-                "#8B0040",
-                "#FF4DB8",
+                fx - s * 0.008,
+                fy - s * 0.008,
+                fw + s * 0.016,
+                fh + s * 0.016,
               );
-              // Circle photo top center
-              var pcx = s * 0.5,
-                pcy = s * 0.34,
-                pr = s * 0.188;
-              var prg = c.createRadialGradient(
-                pcx,
-                pcy,
-                pr * 0.8,
-                pcx,
-                pcy,
-                pr * 1.3,
+              c.stroke();
+
+              c.save();
+              blobPath(c, fx, fy, fw, fh);
+              c.clip();
+              var psc = Math.max(fw / photo.width, fh / photo.height);
+              var pw = photo.width * psc,
+                phh = photo.height * psc;
+              c.drawImage(
+                photo,
+                fx + (fw - pw) / 2,
+                fy + (fh - phh) / 2,
+                pw,
+                phh,
               );
-              prg.addColorStop(0, "rgba(233,30,140,.45)");
-              prg.addColorStop(1, "rgba(233,30,140,0)");
-              c.fillStyle = prg;
-              c.beginPath();
-              c.arc(pcx, pcy, pr * 1.3, 0, Math.PI * 2);
+              c.restore();
+              c.restore();
+            } else {
+              c.save();
+              c.fillStyle = "rgba(233,30,140,.2)";
+              blobPath(c, fx, fy, fw, fh);
               c.fill();
               c.save();
-              c.strokeStyle = "#E91E8C";
-              c.lineWidth = s * 0.007;
-              c.beginPath();
-              c.arc(pcx, pcy, pr + s * 0.008, 0, Math.PI * 2);
-              c.stroke();
-              c.restore();
-              if (photo) {
-                drawPhoto(
-                  c,
-                  photo,
-                  pcx - pr,
-                  pcy - pr,
-                  pr * 2,
-                  pr * 2,
-                  "circle",
-                );
-              } else {
-                c.save();
-                c.fillStyle = "rgba(233,30,140,.22)";
-                c.beginPath();
-                c.arc(pcx, pcy, pr, 0, Math.PI * 2);
-                c.fill();
-                c.font = Math.round(s * 0.028) + "px " + FONT_SANS;
-                c.fillStyle = "rgba(255,255,255,.4)";
-                c.textAlign = "center";
-                c.textBaseline = "middle";
-                c.fillText("আপনার ছবি", pcx, pcy);
-                c.restore();
-              }
-              // Top greeting text
-              c.save();
-              c.font = Math.round(s * 0.032) + "px " + FONT_SERIF;
-              c.fillStyle = "rgba(255,200,230,.9)";
-              c.textAlign = "center";
-              c.textBaseline = "top";
-              c.shadowColor = "rgba(233,30,140,.5)";
-              c.shadowBlur = 12;
-              c.fillText("সবার জন্য", s * 0.5, s * 0.555);
-              c.font = "700 " + Math.round(s * 0.042) + "px " + FONT_SERIF;
-              c.fillStyle = "#fff";
-              c.fillText("ঈদের শুভেচ্ছা", s * 0.5, s * 0.604);
-              c.font = "bold " + Math.round(s * 0.085) + "px " + FONT_SERIF;
-              c.fillStyle = "#FF4DB8";
-              c.shadowColor = "rgba(233,30,140,.8)";
-              c.shadowBlur = 28;
-              c.fillText("ঈদ মোবারক", s * 0.5, s * 0.654);
-              c.restore();
-              drawMosque(
-                c,
-                s * 0.19,
-                s * 0.77,
-                s * 0.62,
-                s * 0.18,
-                "rgba(255,165,220,.14)",
-              );
-            },
-          },
-
-          /* 3 — চাঁদনী রাত */
-          {
-            name: "চাঁদনী রাত",
-            draw: function (c, s, photo, qr, phone) {
-              var bg = c.createLinearGradient(0, 0, 0, s);
-              bg.addColorStop(0, "#06142A");
-              bg.addColorStop(0.55, "#0B2144");
-              bg.addColorStop(1, "#0A1730");
-              c.fillStyle = bg;
-              c.fillRect(0, 0, s, s);
-
-              var moonGlow = c.createRadialGradient(
-                s * 0.23,
-                s * 0.19,
-                0,
-                s * 0.23,
-                s * 0.19,
-                s * 0.2,
-              );
-              moonGlow.addColorStop(0, "rgba(255,230,170,.45)");
-              moonGlow.addColorStop(1, "rgba(255,230,170,0)");
-              c.fillStyle = moonGlow;
-              c.fillRect(0, 0, s, s);
-
-              drawCrescent(c, s * 0.23, s * 0.19, s * 0.078, "#FFE8A6");
-              drawStar(c, s * 0.31, s * 0.12, s * 0.018, "#FFF3C7", 6);
-
-              [
-                [0.62, 0.11, 0.009],
-                [0.68, 0.18, 0.008],
-                [0.75, 0.08, 0.007],
-                [0.84, 0.15, 0.01],
-                [0.9, 0.09, 0.008],
-              ].forEach(function (st) {
-                drawStar(c, s * st[0], s * st[1], s * st[2], "#D8E9FF", 6);
-              });
-
-              drawLantern(
-                c,
-                s * 0.78,
-                s * 0.2,
-                s * 0.055,
-                s * 0.095,
-                "#D9A441",
-                "#FFE7AA",
-              );
-              drawLantern(
-                c,
-                s * 0.9,
-                s * 0.28,
-                s * 0.045,
-                s * 0.08,
-                "#C88F2E",
-                "#FFE7AA",
-              );
-
-              drawMosque(
-                c,
-                s * 0.08,
-                s * 0.7,
-                s * 0.84,
-                s * 0.27,
-                "rgba(255,255,255,.08)",
-              );
-
-              var px = s * 0.34,
-                py = s * 0.28,
-                pw = s * 0.32,
-                ph = s * 0.32;
-              if (photo) {
-                drawPhoto(c, photo, px, py, pw, ph, "circle");
-                c.save();
-                c.strokeStyle = "#FFE3A1";
-                c.lineWidth = s * 0.007;
-                c.beginPath();
-                c.arc(px + pw / 2, py + ph / 2, pw * 0.52, 0, Math.PI * 2);
-                c.stroke();
-                c.restore();
-              } else {
-                c.save();
-                c.fillStyle = "rgba(255,255,255,.12)";
-                c.beginPath();
-                c.arc(px + pw / 2, py + ph / 2, pw * 0.5, 0, Math.PI * 2);
-                c.fill();
-                c.font = Math.round(s * 0.03) + "px " + FONT_SANS;
-                c.fillStyle = "rgba(255,255,255,.6)";
-                c.textAlign = "center";
-                c.textBaseline = "middle";
-                c.fillText("আপনার ছবি", px + pw / 2, py + ph / 2);
-                c.restore();
-              }
-
-              c.save();
-              c.textAlign = "center";
-              c.textBaseline = "top";
-              c.fillStyle = "#FDF4D2";
-              c.font = "700 " + Math.round(s * 0.058) + "px " + FONT_SERIF;
-              c.fillText("ঈদ মোবারক", s * 0.5, s * 0.64);
               c.font = Math.round(s * 0.03) + "px " + FONT_SANS;
-              c.fillStyle = "rgba(232,240,255,.9)";
-              c.fillText("চাঁদের আলোয় ভালোবাসা ছড়িয়ে যাক", s * 0.5, s * 0.71);
+              c.fillStyle = "rgba(180,0,90,.55)";
+              c.textAlign = "center";
+              c.textBaseline = "middle";
+              c.fillText("আপনার ছবি", fx + fw / 2, fy + fh / 2);
               c.restore();
-            },
-          },
-
-          /* 4 — সোনালি ফানুস */
-          {
-            name: "সোনালি ফানুস",
-            draw: function (c, s, photo, qr, phone) {
-              var bg = c.createLinearGradient(0, 0, s, s);
-              bg.addColorStop(0, "#2E1200");
-              bg.addColorStop(0.45, "#5A2500");
-              bg.addColorStop(1, "#1D0A00");
-              c.fillStyle = bg;
-              c.fillRect(0, 0, s, s);
-
-              var warm = c.createRadialGradient(
-                s * 0.5,
-                s * 0.35,
-                s * 0.05,
-                s * 0.5,
-                s * 0.35,
-                s * 0.58,
-              );
-              warm.addColorStop(0, "rgba(255,190,80,.34)");
-              warm.addColorStop(1, "rgba(255,190,80,0)");
-              c.fillStyle = warm;
-              c.fillRect(0, 0, s, s);
-
-              drawCrescent(c, s * 0.5, s * 0.15, s * 0.06, "#FFD588");
-              drawStar(c, s * 0.58, s * 0.1, s * 0.015, "#FFE9BE", 6);
-
-              [0.2, 0.36, 0.52, 0.68, 0.84].forEach(function (x, i) {
-                drawLantern(
-                  c,
-                  s * x,
-                  s * (0.18 + (i % 2) * 0.05),
-                  s * 0.045,
-                  s * 0.082,
-                  i % 2 ? "#CA8E2A" : "#E5A93A",
-                  "#FFD98E",
-                );
-              });
-
-              var px = s * 0.2,
-                py = s * 0.31,
-                pw = s * 0.6,
-                ph = s * 0.44;
+              c.restore();
+            }
+            // bKash logo top left
+            drawBkLogo(c, s * 0.05, s * -0.02, s * 0.18);
+            // Text
+            c.save();
+            c.shadowColor = "rgba(0,0,0,.15)";
+            c.shadowBlur = 6;
+            c.font = Math.round(s * 0.052) + "px " + FONT_SERIF;
+            c.fillStyle = "#2d0018";
+            c.textAlign = "left";
+            c.textBaseline = "top";
+            c.fillText("ঈদ এর চাঁদ আকাশে", s * 0.05, s * 0.15);
+            c.font = "600 " + Math.round(s * 0.058) + "px " + FONT_SERIF;
+            c.fillStyle = "#1a0010";
+            c.fillText("সালামি দিন", s * 0.05, s * 0.222);
+            c.font = "bold " + Math.round(s * 0.112) + "px " + FONT_SERIF;
+            c.fillStyle = "#E91E8C";
+            c.shadowColor = "rgba(233,30,140,.3)";
+            c.shadowBlur = 18;
+            c.fillText("বিকাশে", s * 0.05, s * 0.292);
+            c.restore();
+            // QR
+            var qx = s * 0.055,
+              qy = s * 0.445,
+              qsz = s * 0.27;
+            if (qr) {
               rr(
                 c,
-                px - s * 0.015,
-                py - s * 0.015,
-                pw + s * 0.03,
-                ph + s * 0.03,
-                s * 0.05,
-                "rgba(255,226,165,.2)",
+                qx - s * 0.018,
+                qy - s * 0.018,
+                qsz + s * 0.036,
+                qsz + s * 0.036,
+                s * 0.03,
+                "#fff",
               );
-              if (photo) {
-                drawPhoto(c, photo, px, py, pw, ph, "rounded");
-              } else {
-                rr(c, px, py, pw, ph, s * 0.04, "rgba(255,255,255,.12)");
-                c.save();
-                c.textAlign = "center";
-                c.textBaseline = "middle";
-                c.fillStyle = "rgba(255,232,195,.72)";
-                c.font = Math.round(s * 0.034) + "px " + FONT_SANS;
-                c.fillText("আপনার ছবি", px + pw / 2, py + ph / 2);
-                c.restore();
-              }
-
-              drawMosque(
+              rrs(
                 c,
-                s * 0.05,
-                s * 0.79,
-                s * 0.9,
-                s * 0.18,
-                "rgba(255,226,170,.16)",
+                qx - s * 0.018,
+                qy - s * 0.018,
+                qsz + s * 0.036,
+                qsz + s * 0.036,
+                s * 0.03,
+                "#E91E8C",
+                s * 0.0045,
               );
+              drawQR(c, qr, qx, qy, qsz);
+            } else {
+              rr(
+                c,
+                qx - s * 0.018,
+                qy - s * 0.018,
+                qsz + s * 0.036,
+                qsz + s * 0.036,
+                s * 0.03,
+                "rgba(255,255,255,.7)",
+              );
+              rrs(
+                c,
+                qx - s * 0.018,
+                qy - s * 0.018,
+                qsz + s * 0.036,
+                qsz + s * 0.036,
+                s * 0.03,
+                "#E91E8C",
+                s * 0.004,
+              );
+              c.save();
+              c.font = Math.round(s * 0.024) + "px " + FONT_SANS;
+              c.fillStyle = "rgba(200,0,90,.55)";
+              c.textAlign = "center";
+              c.textBaseline = "middle";
+              c.fillText("QR কোড এখানে", qx + qsz / 2, qy + qsz / 2);
+              c.restore();
+            }
+            // Scan text
+            c.save();
+            c.font = "600 " + Math.round(s * 0.027) + "px " + FONT_SERIF;
+            c.fillStyle = "#1a0010";
+            c.textAlign = "left";
+            c.textBaseline = "top";
+            c.shadowColor = "rgba(0,0,0,.1)";
+            c.shadowBlur = 4;
+            c.fillText("বিকাশ অ্যাপে স্ক্যান করুন", s * 0.052, s * 0.764);
+            c.font = Math.round(s * 0.024) + "px " + FONT_SANS;
+            c.fillStyle = "rgba(50,0,30,.75)";
+            c.fillText("আর পাঠিয়ে দিন সালামি", s * 0.052, s * 0.806);
+            c.restore();
+            // Footer strip (sample-style)
+            var ph = phone || "01*********",
+              stripX = 0,
+              stripY = s * 0.92,
+              stripW = s,
+              stripH = s * 0.08,
+              leftW = s * 0.38;
+
+            var sg = c.createLinearGradient(
+              stripX,
+              stripY,
+              stripX + stripW,
+              stripY,
+            );
+            sg.addColorStop(0, "#E91E8C");
+            sg.addColorStop(1, "#B30062");
+            c.fillStyle = sg;
+            c.fillRect(stripX, stripY, stripW, stripH);
+
+            c.fillStyle = "rgba(90,0,50,.32)";
+            c.fillRect(stripX, stripY, leftW, stripH);
+
+            c.fillStyle = "rgba(255,255,255,.16)";
+            c.fillRect(stripX, stripY, stripW, s * 0.003);
+
+            c.save();
+            drawMosque(
+              c,
+              stripX + s * 0.03,
+              stripY + s * 0.012,
+              s * 0.068,
+              s * 0.056,
+              "#FFD16F",
+            );
+            drawCrescent(
+              c,
+              stripX + s * 0.079,
+              stripY + s * 0.025,
+              s * 0.012,
+              "#FFD16F",
+            );
+            drawStar(
+              c,
+              stripX + s * 0.09,
+              stripY + s * 0.018,
+              s * 0.006,
+              "#FFD16F",
+              6,
+            );
+            c.font = "700 " + Math.round(s * 0.026) + "px " + FONT_SERIF;
+            c.fillStyle = "#FFD16F";
+            c.textAlign = "left";
+            c.textBaseline = "middle";
+            c.fillText("ঈদ মোবারক", stripX + s * 0.122, stripY + stripH * 0.56);
+            c.restore();
+
+            c.save();
+            c.font = "600 " + Math.round(s * 0.022) + "px " + FONT_SANS;
+            c.fillStyle = "rgba(255,228,245,.95)";
+            c.textAlign = "left";
+            c.textBaseline = "middle";
+            c.fillText(
+              "বিকাশ নম্বরঃ",
+              stripX + leftW + s * 0.028,
+              stripY + stripH * 0.52,
+            );
+
+            // Draw phone number with Bangla digits
+            var phoneDisplayNum = englishToBanglaDigits(ph);
+            c.font = "600 " + Math.round(s * 0.032) + "px " + FONT_SERIF;
+            c.fillStyle = "#FFE8F6";
+            c.fillText(
+              phoneDisplayNum,
+              stripX + leftW + s * 0.198,
+              stripY + stripH * 0.52,
+            );
+            c.restore();
+          },
+        },
+
+        /* 1 — Clasic Nagad */
+        {
+          name: "Clasic Nagad",
+          brand: "nagad",
+          draw: function (c, s, photo, qr, phone) {
+            var bg = c.createLinearGradient(0, 0, s, s);
+            bg.addColorStop(0, "#FFF1E1");
+            bg.addColorStop(0.48, "#FFC986");
+            bg.addColorStop(1, "#FF9A2C");
+            c.fillStyle = bg;
+            c.fillRect(0, 0, s, s);
+
+            c.save();
+            c.fillStyle = "rgba(185,70,0,.14)";
+            c.beginPath();
+            c.moveTo(s * 0.42, 0);
+            c.lineTo(s, 0);
+            c.lineTo(s, s * 0.9);
+            c.lineTo(s * 0.24, s * 0.18);
+            c.closePath();
+            c.fill();
+            c.restore();
+
+            var sand = c.createLinearGradient(s * 0.54, 0, s, s);
+            sand.addColorStop(0, "rgba(255,138,0,.26)");
+            sand.addColorStop(1, "rgba(170,60,0,.4)");
+            c.fillStyle = sand;
+            c.beginPath();
+            c.moveTo(s * 0.56, s * 0.28);
+            c.lineTo(s, s * 0.08);
+            c.lineTo(s, s * 0.95);
+            c.lineTo(s * 0.48, s * 0.91);
+            c.closePath();
+            c.fill();
+
+            [
+              [0.84, 0.07, 0.028, "#F36A10"],
+              [0.92, 0.14, 0.02, "#D55700"],
+              [0.78, 0.12, 0.016, "#FF8D38"],
+            ].forEach(function (p) {
+              drawStar(c, s * p[0], s * p[1], s * p[2], p[3]);
+            });
+
+            [
+              [s * 0.88, s * 0.04, s * 0.88, s * 0.18, "#E96510"],
+              [s * 0.93, s * 0.06, s * 0.93, s * 0.23, "#C95100"],
+            ].forEach(function (ln) {
+              c.save();
+              c.strokeStyle = ln[4];
+              c.lineWidth = 1.2;
+              c.setLineDash([3, 4]);
+              c.beginPath();
+              c.moveTo(ln[0], ln[1]);
+              c.lineTo(ln[2], ln[3]);
+              c.stroke();
+              c.setLineDash([]);
+              c.restore();
+              drawStar(c, ln[2], ln[3] + s * 0.024, s * 0.026, ln[4]);
+            });
+
+            drawMosque(
+              c,
+              s * 0.01,
+              s * 0.72,
+              s * 0.22,
+              s * 0.28,
+              "rgba(185,70,0,.14)",
+            );
+
+            var fx = s * 0.56,
+              fy = s * 0.4,
+              fw = s * 0.42,
+              fh = s * 0.42;
+            if (photo) {
+              c.save();
+              c.fillStyle = "rgba(224,92,8,.2)";
+              blobPath(
+                c,
+                fx - s * 0.028,
+                fy - s * 0.026,
+                fw + s * 0.056,
+                fh + s * 0.052,
+              );
+              c.fill();
+
+              c.lineWidth = s * 0.013;
+              c.strokeStyle = "rgba(208,84,0,.8)";
+              blobPath(
+                c,
+                fx - s * 0.008,
+                fy - s * 0.008,
+                fw + s * 0.016,
+                fh + s * 0.016,
+              );
+              c.stroke();
 
               c.save();
-              c.textAlign = "center";
-              c.textBaseline = "top";
-              c.fillStyle = "#FFE9BF";
-              c.font = "700 " + Math.round(s * 0.054) + "px " + FONT_SERIF;
-              c.fillText("শুভ ঈদ", s * 0.5, s * 0.79);
-              c.font = Math.round(s * 0.028) + "px " + FONT_SANS;
-              c.fillStyle = "rgba(255,238,215,.9)";
-              c.fillText("ফানুসের আলোয় আনন্দময় হোক দিন", s * 0.5, s * 0.845);
+              blobPath(c, fx, fy, fw, fh);
+              c.clip();
+              var psc = Math.max(fw / photo.width, fh / photo.height);
+              var pw = photo.width * psc,
+                phh = photo.height * psc;
+              c.drawImage(
+                photo,
+                fx + (fw - pw) / 2,
+                fy + (fh - phh) / 2,
+                pw,
+                phh,
+              );
               c.restore();
-            },
+              c.restore();
+            } else {
+              c.save();
+              c.fillStyle = "rgba(235,110,20,.22)";
+              blobPath(c, fx, fy, fw, fh);
+              c.fill();
+              c.font = Math.round(s * 0.03) + "px " + FONT_SANS;
+              c.fillStyle = "rgba(150,60,0,.52)";
+              c.textAlign = "center";
+              c.textBaseline = "middle";
+              c.fillText("আপনার ছবি", fx + fw / 2, fy + fh / 2);
+              c.restore();
+            }
+
+            drawNagadLogo(c, s * 0.02, s * 0.01, s * 0.18);
+
+            c.save();
+            c.shadowColor = "rgba(0,0,0,.15)";
+            c.shadowBlur = 6;
+            c.font = Math.round(s * 0.052) + "px " + FONT_SERIF;
+            c.fillStyle = "#4B1D00";
+            c.textAlign = "left";
+            c.textBaseline = "top";
+            c.fillText("ঈদ এলো জগতে,", s * 0.05, s * 0.15);
+            c.font = "600 " + Math.round(s * 0.058) + "px " + FONT_SERIF;
+            c.fillStyle = "#3A1700";
+            c.fillText("সালামি দিন", s * 0.05, s * 0.222);
+            c.font = "bold " + Math.round(s * 0.112) + "px " + FONT_SERIF;
+            c.fillStyle = "#EA6100";
+            c.shadowColor = "rgba(234,97,0,.3)";
+            c.shadowBlur = 18;
+            c.fillText("নগদে", s * 0.05, s * 0.292);
+            c.restore();
+
+            var qx = s * 0.055,
+              qy = s * 0.445,
+              qsz = s * 0.27;
+            if (qr) {
+              rr(
+                c,
+                qx - s * 0.018,
+                qy - s * 0.018,
+                qsz + s * 0.036,
+                qsz + s * 0.036,
+                s * 0.03,
+                "#fff",
+              );
+              rrs(
+                c,
+                qx - s * 0.018,
+                qy - s * 0.018,
+                qsz + s * 0.036,
+                qsz + s * 0.036,
+                s * 0.03,
+                "#EA6100",
+                s * 0.0045,
+              );
+              drawQR(c, qr, qx, qy, qsz);
+            } else {
+              rr(
+                c,
+                qx - s * 0.018,
+                qy - s * 0.018,
+                qsz + s * 0.036,
+                qsz + s * 0.036,
+                s * 0.03,
+                "rgba(255,255,255,.7)",
+              );
+              rrs(
+                c,
+                qx - s * 0.018,
+                qy - s * 0.018,
+                qsz + s * 0.036,
+                qsz + s * 0.036,
+                s * 0.03,
+                "#EA6100",
+                s * 0.004,
+              );
+              c.save();
+              c.font = Math.round(s * 0.024) + "px " + FONT_SANS;
+              c.fillStyle = "rgba(160,65,0,.58)";
+              c.textAlign = "center";
+              c.textBaseline = "middle";
+              c.fillText("QR কোড এখানে", qx + qsz / 2, qy + qsz / 2);
+              c.restore();
+            }
+
+            c.save();
+            c.font = "600 " + Math.round(s * 0.027) + "px " + FONT_SERIF;
+            c.fillStyle = "#3A1700";
+            c.textAlign = "left";
+            c.textBaseline = "top";
+            c.fillText("নগদ অ্যাপে স্ক্যান করুন", s * 0.052, s * 0.764);
+            c.font = Math.round(s * 0.024) + "px " + FONT_SANS;
+            c.fillStyle = "rgba(70,25,0,.76)";
+            c.fillText("আর পাঠিয়ে দিন সালামি", s * 0.052, s * 0.806);
+            c.restore();
+
+            var ph = phone || "013********",
+              stripX = 0,
+              stripY = s * 0.92,
+              stripW = s,
+              stripH = s * 0.08,
+              leftW = s * 0.38;
+
+            var sg = c.createLinearGradient(
+              stripX,
+              stripY,
+              stripX + stripW,
+              stripY,
+            );
+            sg.addColorStop(0, "#EA6100");
+            sg.addColorStop(1, "#B74900");
+            c.fillStyle = sg;
+            c.fillRect(stripX, stripY, stripW, stripH);
+            c.fillStyle = "rgba(95,35,0,.32)";
+            c.fillRect(stripX, stripY, leftW, stripH);
+            c.fillStyle = "rgba(255,255,255,.16)";
+            c.fillRect(stripX, stripY, stripW, s * 0.003);
+
+            c.save();
+            drawMosque(
+              c,
+              stripX + s * 0.03,
+              stripY + s * 0.012,
+              s * 0.068,
+              s * 0.056,
+              "#FFD693",
+            );
+            drawCrescent(
+              c,
+              stripX + s * 0.079,
+              stripY + s * 0.025,
+              s * 0.012,
+              "#FFD693",
+            );
+            drawStar(
+              c,
+              stripX + s * 0.09,
+              stripY + s * 0.018,
+              s * 0.006,
+              "#FFD693",
+              6,
+            );
+            c.font = "700 " + Math.round(s * 0.026) + "px " + FONT_SERIF;
+            c.fillStyle = "#FFE2B3";
+            c.textAlign = "left";
+            c.textBaseline = "middle";
+            c.fillText("ঈদ মোবারক", stripX + s * 0.122, stripY + stripH * 0.56);
+            c.restore();
+
+            c.save();
+            c.font = "600 " + Math.round(s * 0.022) + "px " + FONT_SANS;
+            c.fillStyle = "rgba(255,236,215,.95)";
+            c.textAlign = "left";
+            c.textBaseline = "middle";
+            c.fillText(
+              "নগদ নম্বরঃ",
+              stripX + leftW + s * 0.028,
+              stripY + stripH * 0.52,
+            );
+
+            // Draw phone number with Bangla digits
+            var phoneDisplayNum = englishToBanglaDigits(ph);
+            c.font = "600 " + Math.round(s * 0.032) + "px " + FONT_SERIF;
+            c.fillStyle = "#FFF0D8";
+            c.fillText(
+              phoneDisplayNum,
+              stripX + leftW + s * 0.198,
+              stripY + stripH * 0.52,
+            );
+            c.restore();
           },
+        },
 
-          /* 5 — মিনার রিফ্লেকশন */
-          {
-            name: "মিনার রিফ্লেকশন",
-            draw: function (c, s, photo, qr, phone) {
-              var sky = c.createLinearGradient(0, 0, 0, s);
-              sky.addColorStop(0, "#073B39");
-              sky.addColorStop(0.56, "#0D5B57");
-              sky.addColorStop(1, "#0A2B2A");
-              c.fillStyle = sky;
-              c.fillRect(0, 0, s, s);
+        /* 2 — ডার্ক এলিগ্যান্ট */
+        {
+          name: "ডার্ক এলিগ্যান্ট",
+          draw: function (c, s, photo, qr, phone) {
+            var bg = c.createLinearGradient(0, 0, s, s);
+            bg.addColorStop(0, "#0d0006");
+            bg.addColorStop(0.5, "#1e0012");
+            bg.addColorStop(1, "#100008");
+            c.fillStyle = bg;
+            c.fillRect(0, 0, s, s);
+            var g1 = c.createRadialGradient(
+              s * 0.15,
+              s * 0.3,
+              0,
+              s * 0.15,
+              s * 0.3,
+              s * 0.4,
+            );
+            g1.addColorStop(0, "rgba(233,30,140,.22)");
+            g1.addColorStop(1, "rgba(233,30,140,0)");
+            c.fillStyle = g1;
+            c.fillRect(0, 0, s, s);
+            var g2 = c.createRadialGradient(
+              s * 0.85,
+              s * 0.7,
+              0,
+              s * 0.85,
+              s * 0.7,
+              s * 0.38,
+            );
+            g2.addColorStop(0, "rgba(200,0,100,.18)");
+            g2.addColorStop(1, "rgba(200,0,100,0)");
+            c.fillStyle = g2;
+            c.fillRect(0, 0, s, s);
+            drawMosque(
+              c,
+              s * 0.06,
+              s * 0.68,
+              s * 0.36,
+              s * 0.32,
+              "rgba(233,30,140,.1)",
+            );
+            drawMosque(
+              c,
+              s * 0.58,
+              s * 0.72,
+              s * 0.36,
+              s * 0.28,
+              "rgba(233,30,140,.08)",
+            );
+            // Border arches
+            c.save();
+            c.strokeStyle = "rgba(233,30,140,.5)";
+            c.lineWidth = s * 0.004;
+            c.beginPath();
+            c.moveTo(s * 0.04, s * 0.25);
+            c.lineTo(s * 0.04, s * 0.04);
+            c.lineTo(s * 0.96, s * 0.04);
+            c.lineTo(s * 0.96, s * 0.25);
+            c.stroke();
+            c.beginPath();
+            c.moveTo(s * 0.04, s * 0.96);
+            c.lineTo(s * 0.04, s * 0.78);
+            c.lineTo(s * 0.96, s * 0.78);
+            c.lineTo(s * 0.96, s * 0.96);
+            c.lineTo(s * 0.04, s * 0.96);
+            c.closePath();
+            c.stroke();
+            c.restore();
+            [
+              [s * 0.04, s * 0.04],
+              [s * 0.96, s * 0.04],
+              [s * 0.04, s * 0.96],
+              [s * 0.96, s * 0.96],
+            ].forEach(function (p) {
+              drawStar(c, p[0], p[1], s * 0.022, "rgba(233,30,140,.7)", 8);
+            });
+            drawCrescent(c, s * 0.46, s * 0.078, s * 0.044, "#FF4DB8");
+            drawStar(c, s * 0.558, s * 0.057, s * 0.023, "#FF8CD8");
+            drawLantern(
+              c,
+              s * 0.18,
+              s * 0.092,
+              s * 0.037,
+              s * 0.064,
+              "#8B0040",
+              "#FF4DB8",
+            );
+            drawLantern(
+              c,
+              s * 0.82,
+              s * 0.092,
+              s * 0.037,
+              s * 0.064,
+              "#8B0040",
+              "#FF4DB8",
+            );
+            // Circle photo top center
+            var pcx = s * 0.5,
+              pcy = s * 0.34,
+              pr = s * 0.188;
+            var prg = c.createRadialGradient(
+              pcx,
+              pcy,
+              pr * 0.8,
+              pcx,
+              pcy,
+              pr * 1.3,
+            );
+            prg.addColorStop(0, "rgba(233,30,140,.45)");
+            prg.addColorStop(1, "rgba(233,30,140,0)");
+            c.fillStyle = prg;
+            c.beginPath();
+            c.arc(pcx, pcy, pr * 1.3, 0, Math.PI * 2);
+            c.fill();
+            c.save();
+            c.strokeStyle = "#E91E8C";
+            c.lineWidth = s * 0.007;
+            c.beginPath();
+            c.arc(pcx, pcy, pr + s * 0.008, 0, Math.PI * 2);
+            c.stroke();
+            c.restore();
+            if (photo) {
+              drawPhoto(c, photo, pcx - pr, pcy - pr, pr * 2, pr * 2, "circle");
+            } else {
+              c.save();
+              c.fillStyle = "rgba(233,30,140,.22)";
+              c.beginPath();
+              c.arc(pcx, pcy, pr, 0, Math.PI * 2);
+              c.fill();
+              c.font = Math.round(s * 0.028) + "px " + FONT_SANS;
+              c.fillStyle = "rgba(255,255,255,.4)";
+              c.textAlign = "center";
+              c.textBaseline = "middle";
+              c.fillText("আপনার ছবি", pcx, pcy);
+              c.restore();
+            }
+            // Top greeting text
+            c.save();
+            c.font = Math.round(s * 0.032) + "px " + FONT_SERIF;
+            c.fillStyle = "rgba(255,200,230,.9)";
+            c.textAlign = "center";
+            c.textBaseline = "top";
+            c.shadowColor = "rgba(233,30,140,.5)";
+            c.shadowBlur = 12;
+            c.fillText("সবার জন্য", s * 0.5, s * 0.555);
+            c.font = "700 " + Math.round(s * 0.042) + "px " + FONT_SERIF;
+            c.fillStyle = "#fff";
+            c.fillText("ঈদের শুভেচ্ছা", s * 0.5, s * 0.604);
+            c.font = "bold " + Math.round(s * 0.085) + "px " + FONT_SERIF;
+            c.fillStyle = "#FF4DB8";
+            c.shadowColor = "rgba(233,30,140,.8)";
+            c.shadowBlur = 28;
+            c.fillText("ঈদ মোবারক", s * 0.5, s * 0.654);
+            c.restore();
+            drawMosque(
+              c,
+              s * 0.19,
+              s * 0.77,
+              s * 0.62,
+              s * 0.18,
+              "rgba(255,165,220,.14)",
+            );
+          },
+        },
 
-              var topLight = c.createRadialGradient(
-                s * 0.7,
-                s * 0.2,
+        /* 3 — চাঁদনী রাত */
+        {
+          name: "চাঁদনী রাত",
+          draw: function (c, s, photo, qr, phone) {
+            var bg = c.createLinearGradient(0, 0, 0, s);
+            bg.addColorStop(0, "#06142A");
+            bg.addColorStop(0.55, "#0B2144");
+            bg.addColorStop(1, "#0A1730");
+            c.fillStyle = bg;
+            c.fillRect(0, 0, s, s);
+
+            var moonGlow = c.createRadialGradient(
+              s * 0.23,
+              s * 0.19,
+              0,
+              s * 0.23,
+              s * 0.19,
+              s * 0.2,
+            );
+            moonGlow.addColorStop(0, "rgba(255,230,170,.45)");
+            moonGlow.addColorStop(1, "rgba(255,230,170,0)");
+            c.fillStyle = moonGlow;
+            c.fillRect(0, 0, s, s);
+
+            drawCrescent(c, s * 0.23, s * 0.19, s * 0.078, "#FFE8A6");
+            drawStar(c, s * 0.31, s * 0.12, s * 0.018, "#FFF3C7", 6);
+
+            [
+              [0.62, 0.11, 0.009],
+              [0.68, 0.18, 0.008],
+              [0.75, 0.08, 0.007],
+              [0.84, 0.15, 0.01],
+              [0.9, 0.09, 0.008],
+            ].forEach(function (st) {
+              drawStar(c, s * st[0], s * st[1], s * st[2], "#D8E9FF", 6);
+            });
+
+            drawLantern(
+              c,
+              s * 0.78,
+              s * 0.2,
+              s * 0.055,
+              s * 0.095,
+              "#D9A441",
+              "#FFE7AA",
+            );
+            drawLantern(
+              c,
+              s * 0.9,
+              s * 0.28,
+              s * 0.045,
+              s * 0.08,
+              "#C88F2E",
+              "#FFE7AA",
+            );
+
+            drawMosque(
+              c,
+              s * 0.08,
+              s * 0.7,
+              s * 0.84,
+              s * 0.27,
+              "rgba(255,255,255,.08)",
+            );
+
+            var px = s * 0.34,
+              py = s * 0.28,
+              pw = s * 0.32,
+              ph = s * 0.32;
+            if (photo) {
+              drawPhoto(c, photo, px, py, pw, ph, "circle");
+              c.save();
+              c.strokeStyle = "#FFE3A1";
+              c.lineWidth = s * 0.007;
+              c.beginPath();
+              c.arc(px + pw / 2, py + ph / 2, pw * 0.52, 0, Math.PI * 2);
+              c.stroke();
+              c.restore();
+            } else {
+              c.save();
+              c.fillStyle = "rgba(255,255,255,.12)";
+              c.beginPath();
+              c.arc(px + pw / 2, py + ph / 2, pw * 0.5, 0, Math.PI * 2);
+              c.fill();
+              c.font = Math.round(s * 0.03) + "px " + FONT_SANS;
+              c.fillStyle = "rgba(255,255,255,.6)";
+              c.textAlign = "center";
+              c.textBaseline = "middle";
+              c.fillText("আপনার ছবি", px + pw / 2, py + ph / 2);
+              c.restore();
+            }
+
+            c.save();
+            c.textAlign = "center";
+            c.textBaseline = "top";
+            c.fillStyle = "#FDF4D2";
+            c.font = "700 " + Math.round(s * 0.058) + "px " + FONT_SERIF;
+            c.fillText("ঈদ মোবারক", s * 0.5, s * 0.64);
+            c.font = Math.round(s * 0.03) + "px " + FONT_SANS;
+            c.fillStyle = "rgba(232,240,255,.9)";
+            c.fillText("চাঁদের আলোয় ভালোবাসা ছড়িয়ে যাক", s * 0.5, s * 0.71);
+            c.restore();
+          },
+        },
+
+        /* 4 — সোনালি ফানুস */
+        {
+          name: "সোনালি ফানুস",
+          draw: function (c, s, photo, qr, phone) {
+            var bg = c.createLinearGradient(0, 0, s, s);
+            bg.addColorStop(0, "#2E1200");
+            bg.addColorStop(0.45, "#5A2500");
+            bg.addColorStop(1, "#1D0A00");
+            c.fillStyle = bg;
+            c.fillRect(0, 0, s, s);
+
+            var warm = c.createRadialGradient(
+              s * 0.5,
+              s * 0.35,
+              s * 0.05,
+              s * 0.5,
+              s * 0.35,
+              s * 0.58,
+            );
+            warm.addColorStop(0, "rgba(255,190,80,.34)");
+            warm.addColorStop(1, "rgba(255,190,80,0)");
+            c.fillStyle = warm;
+            c.fillRect(0, 0, s, s);
+
+            drawCrescent(c, s * 0.5, s * 0.15, s * 0.06, "#FFD588");
+            drawStar(c, s * 0.58, s * 0.1, s * 0.015, "#FFE9BE", 6);
+
+            [0.2, 0.36, 0.52, 0.68, 0.84].forEach(function (x, i) {
+              drawLantern(
+                c,
+                s * x,
+                s * (0.18 + (i % 2) * 0.05),
+                s * 0.045,
+                s * 0.082,
+                i % 2 ? "#CA8E2A" : "#E5A93A",
+                "#FFD98E",
+              );
+            });
+
+            var px = s * 0.2,
+              py = s * 0.31,
+              pw = s * 0.6,
+              ph = s * 0.44;
+            rr(
+              c,
+              px - s * 0.015,
+              py - s * 0.015,
+              pw + s * 0.03,
+              ph + s * 0.03,
+              s * 0.05,
+              "rgba(255,226,165,.2)",
+            );
+            if (photo) {
+              drawPhoto(c, photo, px, py, pw, ph, "rounded");
+            } else {
+              rr(c, px, py, pw, ph, s * 0.04, "rgba(255,255,255,.12)");
+              c.save();
+              c.textAlign = "center";
+              c.textBaseline = "middle";
+              c.fillStyle = "rgba(255,232,195,.72)";
+              c.font = Math.round(s * 0.034) + "px " + FONT_SANS;
+              c.fillText("আপনার ছবি", px + pw / 2, py + ph / 2);
+              c.restore();
+            }
+
+            drawMosque(
+              c,
+              s * 0.05,
+              s * 0.79,
+              s * 0.9,
+              s * 0.18,
+              "rgba(255,226,170,.16)",
+            );
+
+            c.save();
+            c.textAlign = "center";
+            c.textBaseline = "top";
+            c.fillStyle = "#FFE9BF";
+            c.font = "700 " + Math.round(s * 0.054) + "px " + FONT_SERIF;
+            c.fillText("শুভ ঈদ", s * 0.5, s * 0.79);
+            c.font = Math.round(s * 0.028) + "px " + FONT_SANS;
+            c.fillStyle = "rgba(255,238,215,.9)";
+            c.fillText("ফানুসের আলোয় আনন্দময় হোক দিন", s * 0.5, s * 0.845);
+            c.restore();
+          },
+        },
+
+        /* 5 — মিনার রিফ্লেকশন */
+        {
+          name: "মিনার রিফ্লেকশন",
+          draw: function (c, s, photo, qr, phone) {
+            var sky = c.createLinearGradient(0, 0, 0, s);
+            sky.addColorStop(0, "#073B39");
+            sky.addColorStop(0.56, "#0D5B57");
+            sky.addColorStop(1, "#0A2B2A");
+            c.fillStyle = sky;
+            c.fillRect(0, 0, s, s);
+
+            var topLight = c.createRadialGradient(
+              s * 0.7,
+              s * 0.2,
+              0,
+              s * 0.7,
+              s * 0.2,
+              s * 0.45,
+            );
+            topLight.addColorStop(0, "rgba(165,255,230,.2)");
+            topLight.addColorStop(1, "rgba(165,255,230,0)");
+            c.fillStyle = topLight;
+            c.fillRect(0, 0, s, s);
+
+            drawCrescent(c, s * 0.78, s * 0.17, s * 0.06, "#C4FFE8");
+            [
+              [0.62, 0.12, 0.011],
+              [0.67, 0.21, 0.008],
+              [0.86, 0.1, 0.009],
+              [0.92, 0.18, 0.01],
+            ].forEach(function (st) {
+              drawStar(c, s * st[0], s * st[1], s * st[2], "#DFFFF3", 6);
+            });
+
+            var px = s * 0.08,
+              py = s * 0.24,
+              pw = s * 0.44,
+              ph = s * 0.52;
+            if (photo) {
+              drawPhoto(c, photo, px, py, pw, ph, "rounded");
+              rrs(
+                c,
+                px - s * 0.01,
+                py - s * 0.01,
+                pw + s * 0.02,
+                ph + s * 0.02,
+                s * 0.035,
+                "rgba(194,255,235,.8)",
+                s * 0.004,
+              );
+            } else {
+              rr(c, px, py, pw, ph, s * 0.03, "rgba(255,255,255,.13)");
+              c.save();
+              c.textAlign = "center";
+              c.textBaseline = "middle";
+              c.fillStyle = "rgba(220,255,244,.7)";
+              c.font = Math.round(s * 0.03) + "px " + FONT_SANS;
+              c.fillText("আপনার ছবি", px + pw / 2, py + ph / 2);
+              c.restore();
+            }
+
+            drawMosque(
+              c,
+              s * 0.55,
+              s * 0.36,
+              s * 0.37,
+              s * 0.5,
+              "rgba(210,255,240,.2)",
+            );
+            drawMosque(
+              c,
+              s * 0.5,
+              s * 0.79,
+              s * 0.44,
+              s * 0.17,
+              "rgba(180,255,228,.12)",
+            );
+
+            c.save();
+            c.textAlign = "left";
+            c.textBaseline = "top";
+            c.fillStyle = "#D6FFF1";
+            c.font = "700 " + Math.round(s * 0.054) + "px " + FONT_SERIF;
+            c.fillText("ঈদের", s * 0.56, s * 0.24);
+            c.fillText("শুভেচ্ছা", s * 0.56, s * 0.3);
+            c.font = Math.round(s * 0.028) + "px " + FONT_SANS;
+            c.fillStyle = "rgba(220,255,244,.9)";
+            c.fillText("শান্তি আর ভালবাসায় ভরে উঠুক", s * 0.56, s * 0.41);
+            c.fillText("প্রতিটি ঘর", s * 0.56, s * 0.45);
+            c.restore();
+          },
+        },
+
+        /* 6 — ফুলেল ঈদ */
+        {
+          name: "ফুলেল ঈদ",
+          draw: function (c, s, photo, qr, phone) {
+            var bg = c.createLinearGradient(0, 0, s, s);
+            bg.addColorStop(0, "#2A0F27");
+            bg.addColorStop(0.45, "#4B1848");
+            bg.addColorStop(1, "#2A0D29");
+            c.fillStyle = bg;
+            c.fillRect(0, 0, s, s);
+
+            [
+              [0.1, 0.14, 0.1, "rgba(255,160,220,.2)"],
+              [0.9, 0.2, 0.12, "rgba(255,190,230,.16)"],
+              [0.15, 0.82, 0.14, "rgba(255,145,210,.14)"],
+              [0.88, 0.86, 0.12, "rgba(255,175,220,.14)"],
+            ].forEach(function (b) {
+              c.save();
+              c.fillStyle = b[3];
+              c.beginPath();
+              c.arc(s * b[0], s * b[1], s * b[2], 0, Math.PI * 2);
+              c.fill();
+              c.restore();
+            });
+
+            drawCrescent(c, s * 0.5, s * 0.14, s * 0.058, "#FFCFEF");
+            drawStar(c, s * 0.58, s * 0.11, s * 0.014, "#FFE2F6", 6);
+
+            var petals = [
+              [0.1, 0.26],
+              [0.16, 0.24],
+              [0.86, 0.29],
+              [0.92, 0.25],
+              [0.08, 0.74],
+              [0.15, 0.79],
+              [0.84, 0.76],
+              [0.91, 0.82],
+            ];
+            petals.forEach(function (p, i) {
+              c.save();
+              c.fillStyle =
+                i % 2 ? "rgba(255,185,225,.28)" : "rgba(255,145,210,.28)";
+              c.beginPath();
+              c.ellipse(
+                s * p[0],
+                s * p[1],
+                s * 0.032,
+                s * 0.018,
+                0.6,
                 0,
-                s * 0.7,
-                s * 0.2,
-                s * 0.45,
+                Math.PI * 2,
               );
-              topLight.addColorStop(0, "rgba(165,255,230,.2)");
-              topLight.addColorStop(1, "rgba(165,255,230,0)");
-              c.fillStyle = topLight;
-              c.fillRect(0, 0, s, s);
-
-              drawCrescent(c, s * 0.78, s * 0.17, s * 0.06, "#C4FFE8");
-              [
-                [0.62, 0.12, 0.011],
-                [0.67, 0.21, 0.008],
-                [0.86, 0.1, 0.009],
-                [0.92, 0.18, 0.01],
-              ].forEach(function (st) {
-                drawStar(c, s * st[0], s * st[1], s * st[2], "#DFFFF3", 6);
-              });
-
-              var px = s * 0.08,
-                py = s * 0.24,
-                pw = s * 0.44,
-                ph = s * 0.52;
-              if (photo) {
-                drawPhoto(c, photo, px, py, pw, ph, "rounded");
-                rrs(
-                  c,
-                  px - s * 0.01,
-                  py - s * 0.01,
-                  pw + s * 0.02,
-                  ph + s * 0.02,
-                  s * 0.035,
-                  "rgba(194,255,235,.8)",
-                  s * 0.004,
-                );
-              } else {
-                rr(c, px, py, pw, ph, s * 0.03, "rgba(255,255,255,.13)");
-                c.save();
-                c.textAlign = "center";
-                c.textBaseline = "middle";
-                c.fillStyle = "rgba(220,255,244,.7)";
-                c.font = Math.round(s * 0.03) + "px " + FONT_SANS;
-                c.fillText("আপনার ছবি", px + pw / 2, py + ph / 2);
-                c.restore();
-              }
-
-              drawMosque(
-                c,
-                s * 0.55,
-                s * 0.36,
-                s * 0.37,
-                s * 0.5,
-                "rgba(210,255,240,.2)",
-              );
-              drawMosque(
-                c,
-                s * 0.5,
-                s * 0.79,
-                s * 0.44,
-                s * 0.17,
-                "rgba(180,255,228,.12)",
-              );
-
-              c.save();
-              c.textAlign = "left";
-              c.textBaseline = "top";
-              c.fillStyle = "#D6FFF1";
-              c.font = "700 " + Math.round(s * 0.054) + "px " + FONT_SERIF;
-              c.fillText("ঈদের", s * 0.56, s * 0.24);
-              c.fillText("শুভেচ্ছা", s * 0.56, s * 0.3);
-              c.font = Math.round(s * 0.028) + "px " + FONT_SANS;
-              c.fillStyle = "rgba(220,255,244,.9)";
-              c.fillText("শান্তি আর ভালবাসায় ভরে উঠুক", s * 0.56, s * 0.41);
-              c.fillText("প্রতিটি ঘর", s * 0.56, s * 0.45);
+              c.fill();
               c.restore();
-            },
-          },
+            });
 
-          /* 6 — ফুলেল ঈদ */
-          {
-            name: "ফুলেল ঈদ",
-            draw: function (c, s, photo, qr, phone) {
-              var bg = c.createLinearGradient(0, 0, s, s);
-              bg.addColorStop(0, "#2A0F27");
-              bg.addColorStop(0.45, "#4B1848");
-              bg.addColorStop(1, "#2A0D29");
-              c.fillStyle = bg;
-              c.fillRect(0, 0, s, s);
-
-              [
-                [0.1, 0.14, 0.1, "rgba(255,160,220,.2)"],
-                [0.9, 0.2, 0.12, "rgba(255,190,230,.16)"],
-                [0.15, 0.82, 0.14, "rgba(255,145,210,.14)"],
-                [0.88, 0.86, 0.12, "rgba(255,175,220,.14)"],
-              ].forEach(function (b) {
-                c.save();
-                c.fillStyle = b[3];
-                c.beginPath();
-                c.arc(s * b[0], s * b[1], s * b[2], 0, Math.PI * 2);
-                c.fill();
-                c.restore();
-              });
-
-              drawCrescent(c, s * 0.5, s * 0.14, s * 0.058, "#FFCFEF");
-              drawStar(c, s * 0.58, s * 0.11, s * 0.014, "#FFE2F6", 6);
-
-              var petals = [
-                [0.1, 0.26],
-                [0.16, 0.24],
-                [0.86, 0.29],
-                [0.92, 0.25],
-                [0.08, 0.74],
-                [0.15, 0.79],
-                [0.84, 0.76],
-                [0.91, 0.82],
-              ];
-              petals.forEach(function (p, i) {
-                c.save();
-                c.fillStyle =
-                  i % 2 ? "rgba(255,185,225,.28)" : "rgba(255,145,210,.28)";
-                c.beginPath();
-                c.ellipse(
-                  s * p[0],
-                  s * p[1],
-                  s * 0.032,
-                  s * 0.018,
-                  0.6,
-                  0,
-                  Math.PI * 2,
-                );
-                c.fill();
-                c.restore();
-              });
-
-              var px = s * 0.24,
-                py = s * 0.24,
-                pw = s * 0.52,
-                ph = s * 0.5;
-              if (photo) {
-                drawPhoto(c, photo, px, py, pw, ph, "rounded");
-                rrs(
-                  c,
-                  px - s * 0.01,
-                  py - s * 0.01,
-                  pw + s * 0.02,
-                  ph + s * 0.02,
-                  s * 0.04,
-                  "rgba(255,210,240,.85)",
-                  s * 0.004,
-                );
-              } else {
-                rr(c, px, py, pw, ph, s * 0.04, "rgba(255,255,255,.12)");
-                c.save();
-                c.textAlign = "center";
-                c.textBaseline = "middle";
-                c.fillStyle = "rgba(255,220,244,.7)";
-                c.font = Math.round(s * 0.033) + "px " + FONT_SANS;
-                c.fillText("আপনার ছবি", px + pw / 2, py + ph / 2);
-                c.restore();
-              }
-
+            var px = s * 0.24,
+              py = s * 0.24,
+              pw = s * 0.52,
+              ph = s * 0.5;
+            if (photo) {
+              drawPhoto(c, photo, px, py, pw, ph, "rounded");
+              rrs(
+                c,
+                px - s * 0.01,
+                py - s * 0.01,
+                pw + s * 0.02,
+                ph + s * 0.02,
+                s * 0.04,
+                "rgba(255,210,240,.85)",
+                s * 0.004,
+              );
+            } else {
+              rr(c, px, py, pw, ph, s * 0.04, "rgba(255,255,255,.12)");
               c.save();
               c.textAlign = "center";
-              c.textBaseline = "top";
-              c.fillStyle = "#FFE6F7";
-              c.font = "700 " + Math.round(s * 0.055) + "px " + FONT_SERIF;
-              c.fillText("ফুলেল ঈদ মোবারক", s * 0.5, s * 0.77);
-              c.font = Math.round(s * 0.028) + "px " + FONT_SANS;
-              c.fillStyle = "rgba(255,225,245,.9)";
-              c.fillText("আনন্দে রঙিন হোক প্রতিটি মুহূর্ত", s * 0.5, s * 0.835);
+              c.textBaseline = "middle";
+              c.fillStyle = "rgba(255,220,244,.7)";
+              c.font = Math.round(s * 0.033) + "px " + FONT_SANS;
+              c.fillText("আপনার ছবি", px + pw / 2, py + ph / 2);
               c.restore();
-            },
+            }
+
+            c.save();
+            c.textAlign = "center";
+            c.textBaseline = "top";
+            c.fillStyle = "#FFE6F7";
+            c.font = "700 " + Math.round(s * 0.055) + "px " + FONT_SERIF;
+            c.fillText("ফুলেল ঈদ মোবারক", s * 0.5, s * 0.77);
+            c.font = Math.round(s * 0.028) + "px " + FONT_SANS;
+            c.fillStyle = "rgba(255,225,245,.9)";
+            c.fillText("আনন্দে রঙিন হোক প্রতিটি মুহূর্ত", s * 0.5, s * 0.835);
+            c.restore();
           },
-        ];
+        },
+      ];
 
-        var VISIBLE_TEMPLATE_INDEXES = [0, 1, 2, 3, 4, 5, 6];
+      var VISIBLE_TEMPLATE_INDEXES = [0, 1, 2, 3, 4, 5, 6];
 
-        function isPaymentTemplateIndex(idx) {
-          return idx === 0 || idx === 1;
-        }
+      function isPaymentTemplateIndex(idx) {
+        return idx === 0 || idx === 1;
+      }
 
-        /* ═══════════════════════════
+      /* ═══════════════════════════
          RENDER
       ═══════════════════════════ */
-        function render() {
-          syncBrandingUI();
-          syncConditionalSections();
-          ctx.clearRect(0, 0, S, S);
-          var activeQR = isPaymentTemplateIndex(currentTpl) ? userQR : null;
-          var activePhone = isPaymentTemplateIndex(currentTpl) ? phoneNum : "";
-          TEMPLATES[currentTpl].draw(ctx, S, userPhoto, activeQR, activePhone);
-          if (!isPaymentTemplateIndex(currentTpl)) {
-            drawPosterMessage(ctx, S, customMessage);
-          }
+      function render() {
+        syncBrandingUI();
+        syncConditionalSections();
+        ctx.clearRect(0, 0, S, S);
+        var activeQR = isPaymentTemplateIndex(currentTpl) ? userQR : null;
+        var activePhone = isPaymentTemplateIndex(currentTpl) ? phoneNum : "";
+        TEMPLATES[currentTpl].draw(ctx, S, userPhoto, activeQR, activePhone);
+        if (!isPaymentTemplateIndex(currentTpl)) {
+          drawPosterMessage(ctx, S, customMessage);
         }
+      }
 
-        /* ═══════════════════════════
+      /* ═══════════════════════════
          THUMBNAILS
       ═══════════════════════════ */
-        function initThumbs() {
-          document.fonts.ready.then(function () {
-            var row = document.getElementById("tpl-row");
-            if (VISIBLE_TEMPLATE_INDEXES.indexOf(currentTpl) === -1) {
-              currentTpl = VISIBLE_TEMPLATE_INDEXES[0];
-            }
-            VISIBLE_TEMPLATE_INDEXES.forEach(function (tplIdx, viewIdx) {
-              var tpl = TEMPLATES[tplIdx];
-              var item = document.createElement("div");
-              item.className =
-                "tpl-item" + (currentTpl === tplIdx ? " active" : "");
-              var tc = document.createElement("canvas");
-              tc.width = tc.height = 220;
-              tc.className = "tpl-thumb";
-              var tc2 = tc.getContext("2d");
-              tpl.draw(tc2, 220, null, null, "");
-              var lbl = document.createElement("div");
-              lbl.className = "tpl-label";
-              lbl.textContent = tpl.name;
-              item.appendChild(tc);
-              item.appendChild(lbl);
-              item.addEventListener("click", function () {
-                document
-                  .querySelectorAll(".tpl-item")
-                  .forEach(function (el, i) {
-                    el.classList.toggle("active", i === viewIdx);
-                  });
-                currentTpl = tplIdx;
-                render();
-              });
-              row.appendChild(item);
+      function initThumbs() {
+        var row = document.getElementById("tpl-row");
+        if (!row) return;
+
+        if (VISIBLE_TEMPLATE_INDEXES.indexOf(currentTpl) === -1) {
+          currentTpl = VISIBLE_TEMPLATE_INDEXES[0];
+        }
+
+        VISIBLE_TEMPLATE_INDEXES.forEach(function (tplIdx, viewIdx) {
+          var tpl = TEMPLATES[tplIdx];
+          var item = document.createElement("div");
+          item.className =
+            "tpl-item" + (currentTpl === tplIdx ? " active" : "");
+          var tc = document.createElement("canvas");
+          tc.width = tc.height = 220;
+          tc.className = "tpl-thumb";
+          var tc2 = tc.getContext("2d");
+          tpl.draw(tc2, 220, null, null, "");
+          var lbl = document.createElement("div");
+          lbl.className = "tpl-label";
+          lbl.textContent = tpl.name;
+          item.appendChild(tc);
+          item.appendChild(lbl);
+          item.addEventListener("click", function () {
+            document.querySelectorAll(".tpl-item").forEach(function (el, i) {
+              el.classList.toggle("active", i === viewIdx);
             });
+            currentTpl = tplIdx;
             render();
           });
-        }
+          row.appendChild(item);
+        });
 
-        /* ═══════════════════════════
+        render();
+      }
+
+      /* ═══════════════════════════
          DOWNLOAD
       ═══════════════════════════ */
-        function buildExportCanvas(size) {
-          var out = document.createElement("canvas");
-          out.width = size;
-          out.height = size;
-          var c2 = out.getContext("2d");
-          c2.imageSmoothingEnabled = true;
-          c2.imageSmoothingQuality = "high";
-          c2.clearRect(0, 0, size, size);
-          var activeQR = isPaymentTemplateIndex(currentTpl) ? userQR : null;
-          var activePhone = isPaymentTemplateIndex(currentTpl) ? phoneNum : "";
-          TEMPLATES[currentTpl].draw(
-            c2,
-            size,
-            userPhoto,
-            activeQR,
-            activePhone,
-          );
-          if (!isPaymentTemplateIndex(currentTpl)) {
-            drawPosterMessage(c2, size, customMessage);
-          }
-          return out;
+      function buildExportCanvas(size) {
+        var out = document.createElement("canvas");
+        out.width = size;
+        out.height = size;
+        var c2 = out.getContext("2d");
+        c2.imageSmoothingEnabled = true;
+        c2.imageSmoothingQuality = "high";
+        c2.clearRect(0, 0, size, size);
+        var activeQR = isPaymentTemplateIndex(currentTpl) ? userQR : null;
+        var activePhone = isPaymentTemplateIndex(currentTpl) ? phoneNum : "";
+        TEMPLATES[currentTpl].draw(c2, size, userPhoto, activeQR, activePhone);
+        if (!isPaymentTemplateIndex(currentTpl)) {
+          drawPosterMessage(c2, size, customMessage);
         }
+        return out;
+      }
 
-        function triggerCanvasDownload(outCanvas, filename) {
-          return new Promise(function (resolve, reject) {
-            try {
-              // Detect if running in Facebook embedded browser
-              var isFacebookBrowser =
-                navigator.userAgent.indexOf("FBAN") > -1 ||
-                navigator.userAgent.indexOf("FBAV") > -1;
-
-              // Helper function to create data URL and download
-              function downloadViaDataUrl(dataUrl) {
-                var a = document.createElement("a");
-                a.download = filename;
-                a.rel = "noopener";
-                a.href = dataUrl;
-                document.body.appendChild(a);
-                a.click();
-                setTimeout(function () {
-                  if (a.parentNode) a.parentNode.removeChild(a);
-                }, 100);
-                resolve();
-              }
-
-              // Initialize download process
-              var a = document.createElement("a");
-              a.download = filename;
-              a.rel = "noopener";
-              document.body.appendChild(a);
-
-              // Convert canvas to data URL
-              setTimeout(function () {
+      function triggerCanvasDownload(outCanvas, filename) {
+        return new Promise(function (resolve, reject) {
+          try {
+            // Convert canvas to data URL
+            setTimeout(function () {
+              try {
                 var pngDataUrl = outCanvas.toDataURL("image/png");
                 if (pngDataUrl && pngDataUrl.indexOf("data:image") === 0) {
-                  if (isFacebookBrowser) {
+                  if (IS_FACEBOOK_BROWSER) {
                     // For Facebook browser: Open in new window as fallback
                     var win = window.open(pngDataUrl, "_blank");
                     if (win) {
                       showToast(
                         "ছবি খোলা হয়েছে - দীর্ঘ স্পর্শ করে সংরক্ষণ করুন",
                       );
+                    } else {
+                      showToast(
+                        "পপ-আপ ব্লক হয়েছে - Chrome এ খুলুন বা অনুমতি দিন",
+                      );
                     }
                     resolve();
                   } else {
                     // For normal browsers: Direct download
+                    var a = document.createElement("a");
+                    a.download = filename;
+                    a.rel = "noopener";
                     a.href = pngDataUrl;
+                    document.body.appendChild(a);
                     a.click();
                     setTimeout(function () {
                       if (a.parentNode) a.parentNode.removeChild(a);
@@ -2787,78 +2750,90 @@
                 } else {
                   reject(new Error("Failed to generate image data"));
                 }
-              }, 100);
-            } catch (err) {
-              reject(err);
-            }
-          });
+              } catch (e) {
+                reject(e);
+              }
+            }, 100);
+          } catch (err) {
+            reject(err);
+          }
+        });
+      }
+
+      document.getElementById("dl-btn").addEventListener("click", function () {
+        if (!userPhoto) {
+          showToast("আগে আপনার ছবি আপলোড করুন");
+          return;
         }
+        var btn = this;
+        btn.disabled = true;
+        var oldText = btn.textContent;
+        btn.textContent = "⏳ HD পোস্টার তৈরি হচ্ছে...";
 
-        document
-          .getElementById("dl-btn")
-          .addEventListener("click", function () {
-            if (!userPhoto) {
-              showToast("আগে আপনার ছবি আপলোড করুন");
-              return;
-            }
-            var btn = this;
-            btn.disabled = true;
-            var oldText = btn.textContent;
-            btn.textContent = "⏳ HD পোস্টার তৈরি হচ্ছে...";
+        setTimeout(function () {
+          try {
+            var out = buildExportCanvas(2200);
 
-            setTimeout(function () {
-              try {
-                var out = buildExportCanvas(2200);
-
-                triggerCanvasDownload(out, "eid-poster-maker.png")
-                  .then(function () {
-                    showToast("HD পোস্টার ডাউনলোড শুরু হয়েছে ✓");
-                  })
-                  .catch(function (error) {
-                    // Fallback: Open image in new tab if download fails
-                    try {
-                      var imgUrl = out.toDataURL("image/png");
-                      var win = window.open(imgUrl, "_blank");
-                      if (win) {
-                        showToast(
-                          "ছবি খোলা হয়েছে - দীর্ঘ স্পর্শ করে সংরক্ষণ করুন",
-                        );
-                      } else {
-                        showToast(
-                          "ডাউনলোড ব্লক হয়েছে। পপ-আপ অনুমতি দিন বা পুনরায় চেষ্টা করুন",
-                        );
-                      }
-                    } catch (e) {
+            triggerCanvasDownload(out, "eid-poster-maker.png")
+              .then(function () {
+                showToast("HD পোস্টার ডাউনলোড শুরু হয়েছে ✓");
+              })
+              .catch(function (error) {
+                // Fallback: Open image in new tab if download fails
+                try {
+                  var imgUrl = out.toDataURL("image/png");
+                  var win = window.open(imgUrl, "_blank");
+                  if (win) {
+                    showToast(
+                      "ছবি খোলা হয়েছে - দীর্ঘ স্পর্শ করে সংরক্ষণ করুন",
+                    );
+                  } else {
+                    if (IS_FACEBOOK_BROWSER) {
                       showToast(
-                        "ডাউনলোড ব্লক হয়েছে। ব্রাউজারের Download allow করুন",
+                        "Chrome বা Safari এ খুলুন - Facebook এ ডাউনলোড কাজ করে না",
+                      );
+                    } else {
+                      showToast(
+                        "ডাউনলোড ব্লক হয়েছে। পপ-আপ অনুমতি দিন বা পুনরায় চেষ্টা করুন",
                       );
                     }
-                  })
-                  .finally(function () {
-                    btn.disabled = false;
-                    btn.textContent = oldText;
-                  });
-              } catch (err) {
+                  }
+                } catch (e) {
+                  if (IS_FACEBOOK_BROWSER) {
+                    showToast(
+                      "Chrome বা Safari ব্যবহার করুন - এখানে ডাউনলোড কাজ করে না",
+                    );
+                  } else {
+                    showToast(
+                      "ডাউনলোড ব্লক হয়েছে। ব্রাউজারের Download allow করুন",
+                    );
+                  }
+                }
+              })
+              .finally(function () {
                 btn.disabled = false;
                 btn.textContent = oldText;
-                showToast("পোস্টার তৈরি করা যায়নি");
-              }
-            }, 80);
-          });
+              });
+          } catch (err) {
+            btn.disabled = false;
+            btn.textContent = oldText;
+            showToast("পোস্টার তৈরি করা যায়নি");
+          }
+        }, 80);
+      });
 
-        /* ═══════════════════════════
+      /* ═══════════════════════════
          TOAST
       ═══════════════════════════ */
-        var toastT;
-        function showToast(msg) {
-          var t = document.getElementById("toast");
-          t.textContent = msg;
-          t.classList.add("show");
-          clearTimeout(toastT);
-          toastT = setTimeout(function () {
-            t.classList.remove("show");
-          }, 2500);
-        }
+      var toastT;
+      function showToast(msg) {
+        var t = document.getElementById("toast");
+        t.textContent = msg;
+        t.classList.add("show");
+        clearTimeout(toastT);
+        toastT = setTimeout(function () {
+          t.classList.remove("show");
+        }, 2500);
       }
 
       /* INIT */
