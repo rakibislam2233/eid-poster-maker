@@ -412,6 +412,62 @@
       .toast.show {
         transform: translateX(-50%) translateY(0);
       }
+
+      /* NOTICE BANNER */
+      .notice-banner {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
+        padding: 16px;
+        z-index: 1000;
+        box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+        opacity: 0;
+        transform: translateY(-100%);
+        transition: all 0.4s ease;
+      }
+
+      .notice-banner:not(.hidden) {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .notice-content {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        max-width: 1080px;
+        margin: 0 auto;
+        font-size: 14px;
+        color: #fff;
+        line-height: 1.4;
+      }
+
+      .notice-icon {
+        flex-shrink: 0;
+        font-size: 22px;
+      }
+
+      .notice-text {
+        flex: 1;
+      }
+
+      .notice-close {
+        flex-shrink: 0;
+        background: none;
+        border: none;
+        color: #fff;
+        font-size: 18px;
+        cursor: pointer;
+        padding: 0;
+        margin-left: 8px;
+      }
+
+      .notice-close:hover {
+        opacity: 0.8;
+      }
+
       .footer {
         text-align: center;
         padding: 16px;
@@ -440,6 +496,20 @@
           max-width: calc(100vw - 24px);
           white-space: normal;
           text-align: center;
+        }
+        .notice-banner {
+          padding: 12px;
+        }
+        .notice-content {
+          gap: 8px;
+          font-size: 13px;
+        }
+        .notice-icon {
+          font-size: 18px;
+        }
+        .notice-close {
+          font-size: 16px;
+          margin-left: 4px;
         }
       }
 
@@ -599,6 +669,15 @@
     <footer class="footer">ঈদ মুবারক 🌙 — সবাইকে আন্তরিক শুভেচ্ছা</footer>
     <div class="toast" id="toast"></div>
 
+    <!-- NOTICE BANNER FOR FACEBOOK USERS -->
+    <div class="notice-banner hidden" id="notice-banner">
+      <div class="notice-content">
+        <span class="notice-icon">⚠️</span>
+        <div class="notice-text" id="notice-text"></div>
+        <button class="notice-close" id="notice-close">✕</button>
+      </div>
+    </div>
+
     <!-- CROP MODAL -->
     <div class="crop-overlay hidden" id="crop-overlay">
       <div class="crop-title" id="crop-title">ছবি Crop করুন</div>
@@ -664,12 +743,21 @@
         navigator.userAgent.indexOf("FBAV") > -1 ||
         navigator.userAgent.indexOf("Instagram") > -1;
 
+      function showNotice(message) {
+        var noticeBanner = document.getElementById("notice-banner");
+        var noticeText = document.getElementById("notice-text");
+        if (noticeBanner && noticeText) {
+          noticeText.textContent = message;
+          noticeBanner.classList.remove("hidden");
+        }
+      }
+
       if (IS_FACEBOOK_BROWSER) {
         setTimeout(function () {
-          showToast(
-            "একটি অনুরোধ: ভালো অভিজ্ঞতার জন্য Chrome বা Safari ব্রাউজার ব্যবহার করুন",
+          showNotice(
+            "⚠️ সীমিত সাপোর্ট: Facebook ব্রাউজারে কিছু ফিচার কাজ করে না। Chrome বা Safari ব্যবহার করুন।",
           );
-        }, 1500);
+        }, 800);
       }
 
       function getActiveBrand() {
@@ -842,8 +930,16 @@
         var scaleH = maxH / img.naturalHeight;
         cropState.scale = Math.min(scaleW, scaleH, 1);
 
-        cropCanvas.width = Math.round(img.naturalWidth * cropState.scale);
-        cropCanvas.height = Math.round(img.naturalHeight * cropState.scale);
+        var canvasW = Math.round(img.naturalWidth * cropState.scale);
+        var canvasH = Math.round(img.naturalHeight * cropState.scale);
+
+        cropCanvas.width = canvasW;
+        cropCanvas.height = canvasH;
+
+        // Set explicit CSS size to prevent browser scaling
+        cropCanvas.style.width = canvasW + "px";
+        cropCanvas.style.height = canvasH + "px";
+
         redrawCropCanvas();
 
         cropSel.classList.add("hidden");
@@ -875,9 +971,19 @@
       }
 
       function getRelXY(e, el) {
+        // Get both the CSS display size and internal resolution
         var rect = el.getBoundingClientRect();
+        var scaleX = el.width / rect.width;
+        var scaleY = el.height / rect.height;
+
+        // Get touch or mouse coordinates
         var client = e.touches ? e.touches[0] : e;
-        return { x: client.clientX - rect.left, y: client.clientY - rect.top };
+
+        // Calculate relative position, accounting for CSS scaling
+        var x = (client.clientX - rect.left) * scaleX;
+        var y = (client.clientY - rect.top) * scaleY;
+
+        return { x: x, y: y };
       }
 
       function clamp(v, lo, hi) {
@@ -889,10 +995,16 @@
         var y1 = Math.min(cropState.startY, cropState.curY);
         var x2 = Math.max(cropState.startX, cropState.curX);
         var y2 = Math.max(cropState.startY, cropState.curY);
-        cropSel.style.left = x1 + "px";
-        cropSel.style.top = y1 + "px";
-        cropSel.style.width = x2 - x1 + "px";
-        cropSel.style.height = y2 - y1 + "px";
+
+        // Convert from canvas internal coordinates to CSS display coordinates
+        var rect = cropCanvas.getBoundingClientRect();
+        var displayScaleX = rect.width / cropCanvas.width;
+        var displayScaleY = rect.height / cropCanvas.height;
+
+        cropSel.style.left = x1 * displayScaleX + "px";
+        cropSel.style.top = y1 * displayScaleY + "px";
+        cropSel.style.width = (x2 - x1) * displayScaleX + "px";
+        cropSel.style.height = (y2 - y1) * displayScaleY + "px";
         cropSel.classList.remove("hidden");
       }
 
@@ -2716,48 +2828,102 @@
       function triggerCanvasDownload(outCanvas, filename) {
         return new Promise(function (resolve, reject) {
           try {
-            // Convert canvas to data URL
-            setTimeout(function () {
-              try {
-                var pngDataUrl = outCanvas.toDataURL("image/png");
-                if (pngDataUrl && pngDataUrl.indexOf("data:image") === 0) {
+            // Convert canvas to blob for better compatibility
+            outCanvas.toBlob(
+              function (blob) {
+                try {
+                  if (!blob) {
+                    reject(new Error("Blob creation failed"));
+                    return;
+                  }
+
                   if (IS_FACEBOOK_BROWSER) {
-                    // For Facebook browser: Open in new window as fallback
-                    var win = window.open(pngDataUrl, "_blank");
-                    if (win) {
-                      showToast(
-                        "ছবি খোলা হয়েছে - দীর্ঘ স্পর্শ করে সংরক্ষণ করুন",
-                      );
-                    } else {
-                      showToast(
-                        "পপ-আপ ব্লক হয়েছে - Chrome এ খুলুন বা অনুমতি দিন",
-                      );
-                    }
+                    // For Facebook browser: Show image in modal for long-press save
+                    var blobUrl = URL.createObjectURL(blob);
+                    showImageModal(blobUrl, filename);
                     resolve();
                   } else {
                     // For normal browsers: Direct download
+                    var blobUrl = URL.createObjectURL(blob);
                     var a = document.createElement("a");
                     a.download = filename;
                     a.rel = "noopener";
-                    a.href = pngDataUrl;
+                    a.href = blobUrl;
                     document.body.appendChild(a);
                     a.click();
                     setTimeout(function () {
                       if (a.parentNode) a.parentNode.removeChild(a);
+                      URL.revokeObjectURL(blobUrl);
                     }, 100);
                     resolve();
                   }
-                } else {
-                  reject(new Error("Failed to generate image data"));
+                } catch (e) {
+                  reject(e);
                 }
-              } catch (e) {
-                reject(e);
-              }
-            }, 100);
+              },
+              "image/png",
+              0.95,
+            );
           } catch (err) {
             reject(err);
           }
         });
+      }
+
+      function showImageModal(imageUrl, filename) {
+        // Create modal overlay
+        var modal = document.createElement("div");
+        modal.style.cssText =
+          "position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.9); z-index: 2000; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 16px;";
+
+        // Close button
+        var closeBtn = document.createElement("button");
+        closeBtn.style.cssText =
+          "position: absolute; top: 12px; right: 12px; background: none; border: none; color: #e91e8c; font-size: 24px; cursor: pointer; z-index: 2001;";
+        closeBtn.textContent = "✕";
+        closeBtn.onclick = function () {
+          document.body.removeChild(modal);
+          URL.revokeObjectURL(imageUrl);
+        };
+
+        // Image container
+        var imgContainer = document.createElement("div");
+        imgContainer.style.cssText =
+          "max-width: 95vw; max-height: 70vh; overflow: auto; margin-top: 40px; margin-bottom: 20px;";
+
+        var img = document.createElement("img");
+        img.src = imageUrl;
+        img.style.cssText =
+          "max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 8px 32px rgba(233, 30, 140, 0.4);";
+        imgContainer.appendChild(img);
+
+        // Instructions
+        var instructions = document.createElement("div");
+        instructions.style.cssText =
+          "color: #fff; text-align: center; font-size: 14px; font-family: 'Anek Bangla', sans-serif; line-height: 1.6; margin-bottom: 16px;";
+        instructions.innerHTML =
+          "<div style='margin-bottom: 8px;'>📱 ছবি দীর্ঘ সময় ধরে চেপে ধরুন</div><div>তারপর 'সংরক্ষণ করুন' বা 'ফটো লাইব্রেরিতে সংরক্ষণ করুন' বেছে নিন</div>";
+
+        // Download button (for browsers that support it)
+        var downloadBtn = document.createElement("button");
+        downloadBtn.textContent = "সংরক্ষণ করুন";
+        downloadBtn.style.cssText =
+          "background: linear-gradient(135deg, #e91e8c, #ff4db8); color: #fff; border: none; padding: 10px 28px; border-radius: 100px; font-size: 14px; cursor: pointer; font-family: 'Anek Bangla', sans-serif; margin-top: 12px;";
+        downloadBtn.onclick = function () {
+          // Try direct download
+          var a = document.createElement("a");
+          a.download = filename;
+          a.href = imageUrl;
+          a.click();
+        };
+
+        modal.appendChild(closeBtn);
+        modal.appendChild(imgContainer);
+        modal.appendChild(instructions);
+        modal.appendChild(downloadBtn);
+        document.body.appendChild(modal);
+
+        showToast("ছবি খোলা হয়েছে - দীর্ঘ স্পর্শ করে সংরক্ষণ করুন");
       }
 
       document.getElementById("dl-btn").addEventListener("click", function () {
@@ -2779,34 +2945,18 @@
                 showToast("HD পোস্টার ডাউনলোড শুরু হয়েছে ✓");
               })
               .catch(function (error) {
-                // Fallback: Open image in new tab if download fails
+                // Fallback on error
                 try {
-                  var imgUrl = out.toDataURL("image/png");
-                  var win = window.open(imgUrl, "_blank");
-                  if (win) {
-                    showToast(
-                      "ছবি খোলা হয়েছে - দীর্ঘ স্পর্শ করে সংরক্ষণ করুন",
-                    );
-                  } else {
-                    if (IS_FACEBOOK_BROWSER) {
-                      showToast(
-                        "Chrome বা Safari এ খুলুন - Facebook এ ডাউনলোড কাজ করে না",
-                      );
-                    } else {
-                      showToast(
-                        "ডাউনলোড ব্লক হয়েছে। পপ-আপ অনুমতি দিন বা পুনরায় চেষ্টা করুন",
-                      );
-                    }
-                  }
+                  var out2 = buildExportCanvas(2200);
+                  var canvasUrl = out2.toDataURL("image/png");
+                  showImageModal(canvasUrl, "eid-poster-maker.png");
                 } catch (e) {
                   if (IS_FACEBOOK_BROWSER) {
                     showToast(
-                      "Chrome বা Safari ব্যবহার করুন - এখানে ডাউনলোড কাজ করে না",
+                      "Chrome বা Safari ব্যবহার করুন - Facebook এ সীমাবদ্ধতা আছে",
                     );
                   } else {
-                    showToast(
-                      "ডাউনলোড ব্লক হয়েছে। ব্রাউজারের Download allow করুন",
-                    );
+                    showToast("ডাউনলোড ব্যর্থ হয়েছে - পুনরায় চেষ্টা করুন");
                   }
                 }
               })
@@ -2834,6 +2984,17 @@
         toastT = setTimeout(function () {
           t.classList.remove("show");
         }, 2500);
+      }
+
+      // Notice banner close button
+      var noticeCloseBtn = document.getElementById("notice-close");
+      if (noticeCloseBtn) {
+        noticeCloseBtn.addEventListener("click", function () {
+          var noticeBanner = document.getElementById("notice-banner");
+          if (noticeBanner) {
+            noticeBanner.classList.add("hidden");
+          }
+        });
       }
 
       /* INIT */
