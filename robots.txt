@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+Disallow: /private/
+
+Sitemap: https://eidpostergenerator.com/sitemap.xml
+
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
